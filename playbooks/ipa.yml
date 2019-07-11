@@ -32,7 +32,7 @@
       line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
       create: yes
   - name: Configuring IPA server
-    command: ipa-server-install --setup-dns --allow-zone-overlap -a password --hostname=ipa.example.com -r EXAMPLE.COM -p password -n example.com -U --forwarder 8.8.8.8
+    command: ipa-server-install --setup-dns --allow-zone-overlap -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
   - name: Enabling services
     service: name={{item}} enabled=true
     with_items:
