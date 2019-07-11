@@ -32,11 +32,6 @@
       path: /etc/hosts
       line: 192.168.55.6 system1.example.com system1
       create: yes
-  - name: Adding system2 address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.7 system2.example.com system2
-      create: yes
 #  - name: Populating /etc/hosts
 #    blockinfile:
 #      path: /etc/hosts
