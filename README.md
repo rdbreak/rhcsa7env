@@ -10,14 +10,14 @@ Once the setup is complete, the ipa server and client for realm EXAMPLE.COM will
 
 The machines will take about 10 minutes to fully set up and then they will reboot at the end.
 
-###### It includes two systems:
+### It includes two systems:
 - ipa.example.com
 - system1.example.com (IP address: 192.168.55.6)
 
-###### Network Details:
->ipa
+### Network Details:
+###### ipa
 192.168.55.5
->system1
+###### system1
 192.168.55.6
 
 
