@@ -4,19 +4,19 @@
   tasks:
   - name: Installing Exam Environment Packages
     yum:
-      name: "{{item}}"
-      state: present
-    with_items:
+      name: 
       - ipa-server
       - libselinux-python
-      - epel-release
-  - name: Installing PIP
-    yum:
-      name: python-pip
-      state: latest
-  - name: Expect much?
-    shell: pip --upgrade pip ; pip install --ignore-installed pexpect
-  - name: Disabling selinux
+      state: present
+## These would only be needed for using the "expect" module
+#      - epel-release
+#  - name: Installing PIP
+#    yum:
+#      name: python-pip
+#      state: latest
+#  - name: Expect much?
+#    shell: pip --upgrade pip ; pip install --ignore-installed pexpect
+  - name: Disabling services
     selinux:
       state: disabled
   - name: Fixing hosts file
@@ -39,16 +39,29 @@
       path: /etc/hosts
       line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
       create: yes
+#- name: Generating /etc/hosts
+#  blockinfile:
+#    path: /etc/hosts
+#    block: |
+#      {{ item.shortname}} {{ item.ip }} {{ item.name }}
+#    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+#  with_items:
+#  - { shortname: localhost, name: "localhost.localdomain localhost4 localhost4.localdomain4", ip: 127.0.0.1 }
+#  - { shortname: localhost, name: "localhost.localdomain localhost6 localhost6.localdomain6", ip: "::1" }
+#  - { shortname: ipa, name: "ipa.example.com", ip: 192.168.55.5 }
+#  - { shortname: system1, name: "system1.example.com", ip: 192.168.55.6 }
+#  - { shortname: system2, name: "system2.example.com", ip: 192.168.55.7 }
   - name: Configuring network
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.6/24 ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
   - name: Stopping NTP services
     service: name=ntpd state=stopped
   - name: Configuring IPA client
-    expect:
-      command: ipa-client-install --enable-dns-updates -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
-      responses:
-        (?i)user: "admin"
-        (?i)password: "password"
+    #expect:
+    command: ipa-client-install --enable-dns-updates --force-ntp --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
+    ignore_errors: yes
+      #responses:
+      #  (?i)user: "admin"
+      #  (?i)password: "password"
   - name: Enabling services
     service: name=firewalld enabled=true
   - name: Starting services

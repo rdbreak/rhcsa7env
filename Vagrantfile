@@ -5,7 +5,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 config.ssh.insert_key = false
 config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
-  ipa.vm.network "forwarded_port", guest: 80, host: 8080
+  ipa.vm.network "forwarded_port", guest: 80, host: 8081
   ipa.vm.network "forwarded_port", guest: 443, host: 8445
   ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
