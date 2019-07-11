@@ -33,7 +33,7 @@
       line: 192.168.55.6 system1.example.com system1
       create: yes
   - name: Configuring network
-    shell: nmcli con mod "System eth1" ipv4.addresses "192.168.55.5/24 192.168.55.1" ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
+    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
 #  - name: Populating /etc/hosts
 #    blockinfile:
 #      path: /etc/hosts

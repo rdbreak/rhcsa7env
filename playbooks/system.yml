@@ -52,7 +52,7 @@
 #  - { shortname: system1, name: "system1.example.com", ip: 192.168.55.6 }
 #  - { shortname: system2, name: "system2.example.com", ip: 192.168.55.7 }
   - name: Configuring network
-    shell: nmcli con mod "System eth1" ipv4.addresses "192.168.55.6/24 192.168.55.1" ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
+    command: nmcli con mod "System eth1" ipv4.addresses 192.168.55.6/24 ipv4.gateway 192.168.55.1 ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
   - name: Stopping NTP services
     service: name=ntpd state=stopped
   - name: Configuring IPA client
