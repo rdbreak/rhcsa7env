@@ -12,7 +12,7 @@ The machines will take about 10 minutes to fully set up and then they will reboo
 
 ### It includes two systems:
 - ipa.example.com
-- system1.example.com (IP address: 192.168.55.6)
+- system1.example.com
 
 ### Network Details:
 ###### ipa
