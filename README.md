@@ -1,4 +1,4 @@
-# Vagrant/Ansible for RHCSA Study/Test Environment.
+# Vagrant/Ansible for RHCSA 7 Study/Test Environment.
 
 ## Required software before setting up:
 - Ansible - (`yum install ansible` or `brew install ansible`)
@@ -17,8 +17,8 @@
 192.168.55.6
 
 ### Username/Password
-Username - vagrant
-Password - vagrant
+- Username - vagrant
+- Password - vagrant
 
 ## Set Up Instructions
 1. Create a seperate `/bin` directory and `cd` to it.
