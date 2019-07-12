@@ -2,7 +2,7 @@
 
 ## Required software before setting up:
 - Ansible - (`yum install ansible` or `brew install ansible`)
-- Python2 - (`yum install python2`)
+- Python2 - (`yum install python2`or `brew install python`)
 - [Vagrant](https://www.vagrantup.com/downloads.html)
 - [Virtualbox](https://www.virtualbox.org/wiki/Downloads) 
 
