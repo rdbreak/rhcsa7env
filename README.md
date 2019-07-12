@@ -1,10 +1,10 @@
-# Vagrant/Ansible Study/Test Environment.
+# Vagrant/Ansible for RHCSA Study/Test Environment.
 
 ## Required software before setting up:
 - Ansible - (`yum install ansible` or `brew install ansible`)
-- Python2 - (`yum install python2`or `brew install python`)
-- [Vagrant](https://www.vagrantup.com/downloads.html)
-- [Virtualbox](https://www.virtualbox.org/wiki/Downloads) 
+- Python - (`yum install python`or `brew install python`)
+- [Vagrant](https://www.vagrantup.com/downloads.html) - (`brew cask install vagrant`)
+- [Virtualbox](https://www.virtualbox.org/wiki/Downloads) (`brew cask install VirtualBox`)
 
 Once the setup is complete, the ipa server and client for realm EXAMPLE.COM will already been setup and paired. 
 
