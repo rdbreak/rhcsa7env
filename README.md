@@ -21,3 +21,4 @@ The machines will take about 10 minutes to fully set up and then they will reboo
 192.168.55.6
 
 
+# ipasetup
