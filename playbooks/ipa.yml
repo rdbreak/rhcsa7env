@@ -5,11 +5,8 @@
   - name: Installing Exam Environment Packages
     yum:
       name:
-      - httpd
       - vsftpd
       - ipa-server
-      - libselinux-python
-      - bind*
       - ipa-server-dns
       state: present
   - name: Fixing hosts file
@@ -21,6 +18,11 @@
     lineinfile:
       path: /etc/hosts
       line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+      create: yes
+  - name: Rebuilding host file
+    lineinfile:
+      path: /etc/hosts
+      line: ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
       create: yes
   - name: Adding IPA address to hosts file
     lineinfile:
@@ -34,18 +36,6 @@
       create: yes
   - name: Configuring network
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
-#  - name: Populating /etc/hosts
-#    blockinfile:
-#      path: /etc/hosts
-#      block: |
-#        {{ item.shortname}} {{ item.ip }} {{ item.name }}
-#      marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
-#    with_items:
-#    - { shortname: localhost, name: "localhost.localdomain localhost4 localhost4.localdomain4", ip: 127.0.0.1 }
-#    - { shortname: localhost, name: "localhost.localdomain localhost6 localhost6.localdomain6", ip: "::1" }
-#    - { shortname: ipa, name: "ipa.example.com", ip: 192.168.55.5 }
-#    - { shortname: system1, name: "system1.example.com", ip: 192.168.55.6 }
-#    - { shortname: system2, name: "system2.example.com", ip: 192.168.55.7 }
   - name: Configuring IPA server
     command: ipa-server-install --setup-dns --allow-zone-overlap -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
     ignore_errors: yes
@@ -62,3 +52,6 @@
       - firewalld
   - name: Allowing Firewall Services
     command: firewall-cmd --permanent --add-service=http --add-service=https --add-service=ntp --add-service=dns --add-service=kerberos --add-service=ldap --add-service=ldaps --add-service=ftp
+  - name: Reloading Firewall
+    command: firewall-cmd --reload
+    
