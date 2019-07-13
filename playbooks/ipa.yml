@@ -1,10 +1,11 @@
 ---
 - hosts: ipa
-  strategy: free 
+  strategy: free
+  gather_facts: False
   tasks:
   - name: Installing Environment Packages
     command: yum install -y ipa-server ipa-server-dns vsftpd
-    async: 500
+    async: 600
     poll: 0
     register: yum_sleeper
   - name: Fixing hosts file
@@ -36,7 +37,7 @@
     async_status: jid={{ yum_sleeper.ansible_job_id }}
     register: job_result
     until: job_result.finished
-    retries: 40
+    retries: 50
   - name: Enabling services
     service: name={{item}} enabled=true
     with_items:
