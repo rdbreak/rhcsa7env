@@ -21,11 +21,6 @@
        gpgcheck=1
        gpgkey=http://reflector.westga.edu/repos/CentOS/7/os/x86_64/RPM-GPG-KEY-CentOS-7
        enabled=1
-  - name: Installing Environment Packages
-    command: yum install -y ipa-client man-pages
-    async: 500
-    poll: 0
-    register: yum_sleeper
   - name: Disabling services
     selinux:
       state: disabled
@@ -57,11 +52,16 @@
     command: echo 'nameserver 192.168.55.5' > /etc/resolv.conf
   - name: Enabling Authconfig
     command: authconfig --update --enablesssd --enablesssdauth --enablemkhomedir
-  - name: Finishing Environment Package Installation Before IPA Client Configuration
-    async_status: jid={{ yum_sleeper.ansible_job_id }}
-    register: job_result
-    until: job_result.finished
-    retries: 40  
+  - name: Installing Environment Packages
+    command: yum install -y ipa-client man-pages
+#    async: 500
+#    poll: 0
+#    register: yum_sleeper
+#  - name: Finishing Environment Package Installation Before IPA Client Configuration
+#    async_status: jid={{ yum_sleeper.ansible_job_id }}
+#    register: job_result
+#    until: job_result.finished
+#    retries: 40  
   - name: Configuring IPA client
     command: ipa-client-install --enable-dns-updates -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
     ignore_errors: yes
