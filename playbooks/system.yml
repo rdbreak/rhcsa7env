@@ -83,3 +83,5 @@
   - name: Rebooting machine
     reboot:
       reboot_timeout: 60
+  - name: Adding Kerberos
+    include: kerberos.yml
