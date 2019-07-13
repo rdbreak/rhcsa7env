@@ -55,15 +55,15 @@
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
   - name: Reloading Network Configuration
     shell: nmcli con up "System eth1"  
-  - name: Configuring IPA server (Estimated Time - 5 minutes)
+  - name: Configuring IPA server (Estimated Time - 7 minutes)
     command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
-    async: 1500
-    poll: 0
-    register: ipa_config_sleeper
+#    async: 1500
+#    poll: 0
+#    register: ipa_config_sleeper
     ignore_errors: yes
-  - name: Still Working On IPA Configuration...It takes time ¯\_(ツ)_/¯
-    async_status: jid={{ ipa_config_sleeper.ansible_job_id }}
-    register: job_result
-    until: job_result.finished
-    retries: 200
+#  - name: Still Working On IPA Configuration...It takes time ¯\_(ツ)_/¯
+#    async_status: jid={{ ipa_config_sleeper.ansible_job_id }}
+#    register: job_result
+#    until: job_result.finished
+#    retries: 200
 ...
