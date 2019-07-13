@@ -3,13 +3,14 @@
   strategy: free
   gather_facts: False
   tasks:
-  - name: Preparing environment
-    shell: rm -rf /etc/yum.repos.d/*
-  - name: Setting Up Repo
-    file:
-      path: /etc/yum.repos.d/ipa.repo
-      state: touch
-#      mode: u=rw,g=r,o=r
+  - name: Setting up user
+    user:
+      name: user
+      comment: user
+      uid: 2000
+      group: wheel
+  - name: Changing User Password
+    command: echo password | sudo passwd user --stdin
   - name: Building Repo File
     blockinfile:
       path: /etc/yum.repos.d/ipa.repo
@@ -60,17 +61,13 @@
     async_status: jid={{ yum_sleeper.ansible_job_id }}
     register: job_result
     until: job_result.finished
-    retries: 30  
+    retries: 40  
   - name: Configuring IPA client
-    #expect:
     command: ipa-client-install --enable-dns-updates -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
     ignore_errors: yes
     async: 500
     poll: 0
     register: ipa_sleeper
-     #responses:
-      #  (?i)user: "admin"
-      #  (?i)password: "password"
   - name: Enabling services
     service: name=firewalld enabled=true
   - name: Starting services
@@ -79,7 +76,7 @@
     async_status: jid={{ ipa_sleeper.ansible_job_id }}
     register: job_result
     until: job_result.finished
-    retries: 35
+    retries: 40
   - name: Rebooting machine
     reboot:
       reboot_timeout: 60

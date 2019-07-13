@@ -27,7 +27,7 @@ config.vm.define "system" do |system|
   system.vm.hostname = "system1.example.com"
   system.vm.network "private_network", ip: "192.168.55.6"
   system.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-
+  system.vm.provision :shell, :inline => "sudo rm -rf /etc/yum.repos.d/* ; touch /etc/yum.repos.d/ipa.repo;", run: "always"
   system.vm.provider :virtualbox do |system|
     system.customize ['modifyvm', :id,'--memory', '1024']
   end
