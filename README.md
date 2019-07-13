@@ -1,4 +1,4 @@
-# Vagrant/Ansible for RHCSA 7 Study/Test Environment.
+# RHCSA 7 Study/Test Environment powered by Ansible and Vagrant. 
 
 ## Required software before setting up:
 - Ansible - (`yum install ansible` or `brew install ansible`)
