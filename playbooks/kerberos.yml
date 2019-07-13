@@ -1,0 +1,49 @@
+---
+- hosts: ipa
+  strategy: free 
+  tasks:
+  - name: Adding NFS service to System1
+    ipa_service:
+      name: nfs/system1.example.com
+      state: present
+      ipa_host: ipa.example.com
+      ipa_user: admin
+      ipa_pass: password 
+  - name: Adding IPA user 'dave'
+    ipa_user:
+        name: dave
+        state: present
+        krbpasswordexpiration: 20200119235959
+        givenname: dave
+        sn: dave
+        mail:
+        - dave@example.com
+        telephonenumber:
+        - '+555123456'
+        sshpubkey:
+        uidnumber: 1001
+        gidnumber: 100
+        ipa_host: ipa.example.com
+        ipa_user: admin
+        ipa_pass: password
+  - name: Adding IPA user 'lisa'
+    ipa_user:
+        name: lisa
+        state: present
+        krbpasswordexpiration: 20200119235959
+        givenname: lisa
+        sn: lisa
+        mail:
+        - lisa@example.com
+        telephonenumber:
+        - '+555123456'
+        sshpubkey:
+        uidnumber: 1001
+        gidnumber: 100
+        ipa_host: ipa.example.com
+        ipa_user: admin
+        ipa_pass: password    
+  - name: Copy Keytab To FTP Server
+    command: cp /etc/krb5.keytab /var/ftp/pub/system.keytab
+  - name: Adjusting Permissions
+    command: chmod 0644 /var/ftp/pub/system.keytab

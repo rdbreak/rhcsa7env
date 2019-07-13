@@ -1,57 +1,76 @@
 ---
 - hosts: ipa
-  become: true
+  strategy: free 
   tasks:
-  - name: Installing Exam Environment Packages
-    yum:
-      name:
-      - vsftpd
-      - ipa-server
-      - ipa-server-dns
-      state: present
+  - name: Installing Environment Packages
+    command: yum install -y ipa-server ipa-server-dns vsftpd
+    async: 500
+    poll: 0
+    register: yum_sleeper
+#  - name: Installing Exam Environment Packages
+#    yum:
+#      name:
+#        - vsftpd
+#        - ipa-server
+#        - ipa-server-dns
+#      state: present
+#      async: 1000
+#      poll: 0
+#      register: yum_sleeper
   - name: Fixing hosts file
     lineinfile:
       dest: /etc/hosts
       regexp: '^127\.0\.0\.1'
       state: absent
-  - name: Rebuilding host file
-    lineinfile:
-      path: /etc/hosts
-      line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-      create: yes
-  - name: Rebuilding host file
-    lineinfile:
-      path: /etc/hosts
-      line: ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-      create: yes
-  - name: Adding IPA address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.5 ipa.example.com ipa
-      create: yes
-  - name: Adding system1 address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.6 system1.example.com system1
-      create: yes
-  - name: Configuring network
-    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
-  - name: Configuring IPA server
-    command: ipa-server-install --setup-dns --allow-zone-overlap -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
-    ignore_errors: yes
-  - name: Enabling services
-    service: name={{item}} enabled=true
-    with_items:
-      - httpd
-      - vsftpd
-      - firewalld
-  - name: Starting services
-    service: name={{item}} state=started
-    with_items:
-      - vsftpd
-      - firewalld
-  - name: Allowing Firewall Services
-    command: firewall-cmd --permanent --add-service=http --add-service=https --add-service=ntp --add-service=dns --add-service=kerberos --add-service=ldap --add-service=ldaps --add-service=ftp
-  - name: Reloading Firewall
-    command: firewall-cmd --reload
-    
+#  - name: Adding localhost IPV4 address to host file
+#    lineinfile:
+#      path: /etc/hosts
+#      line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+#      create: yes
+#  - name: Adding localhost IPV6 address to host file
+#    lineinfile:
+#      path: /etc/hosts
+#      line: ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+#      create: yes
+#  - name: Adding IPA address to hosts file
+#    lineinfile:
+#      path: /etc/hosts
+#      line: 192.168.55.5 ipa.example.com ipa
+#      create: yes
+#  - name: Adding system1 address to hosts file
+#    lineinfile:
+#      path: /etc/hosts
+#      line: 192.168.55.6 system1.example.com system1
+#      create: yes
+#  - name: Configuring network
+#    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
+#  - name: Finishing Environment Package Installation...
+#    async_status: jid={{ yum_sleeper.ansible_job_id }}
+#    register: job_result
+#    until: job_result.finished
+#    retries: 20
+#  - name: Configuring IPA server (Estimated Time - 5 minutes)
+#    command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+#    async: 1000
+#    poll: 0
+#    register: ipa_config_sleeper
+#    ignore_errors: yes
+#  - name: Enabling services
+#    service: name={{item}} enabled=true
+#    with_items:
+#      - httpd
+#      - vsftpd
+#      - firewalld
+#  - name: Starting Firewalld
+#    service: name=firewalld state=started
+#  - name: Enabling Firewall Services
+#    command: firewall-cmd --permanent --add-service=http --add-service=https --add-service=ntp --add-service=dns --add-service=kerberos --add-service=ldap --add-service=ldaps --add-service=ftp
+#  - name: Reloading Firewall
+#    command: firewall-cmd --reload
+#  - name: Still Working On IPA Configuration...It takes time ¯\_(ツ)_/¯
+#    async_status: jid={{ ipa_config_sleeper.ansible_job_id }}
+#    register: job_result
+#    until: job_result.finished
+#    retries: 70
+
+  
