@@ -14,10 +14,10 @@ config.vm.define "ipa" do |ipa|
   ipa.vm.provider :virtualbox do |ipa|
     ipa.customize ['modifyvm', :id,'--memory', '2048']
     end
-  ipa.vm.provision "ansible" do |ansible|
-    ansible.version = "latest"
-    ansible.playbook = 'playbooks/ipa.yml'
-  end
+#  ipa.vm.provision "ansible" do |ansible|
+#    ansible.version = "latest"
+#    ansible.playbook = 'playbooks/ipa.yml'
+#  end
 end
   
 config.vm.define "system" do |system|
@@ -34,7 +34,8 @@ config.vm.define "system" do |system|
 
   system.vm.provision "ansible" do |ansible|
     ansible.version = "latest"
-    ansible.playbook = 'playbooks/system.yml'
+    ansible.limit = "all"
+    ansible.playbook = 'playbooks/master.yml'
     end
   end
 end

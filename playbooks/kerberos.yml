@@ -1,3 +1,4 @@
+---
 - hosts: ipa
   strategy: free 
   tasks:
@@ -20,6 +21,7 @@
         telephonenumber:
         - '+555123456'
         sshpubkey:
+        password: password
         uidnumber: 1001
         gidnumber: 100
         ipa_host: ipa.example.com
@@ -37,6 +39,7 @@
         telephonenumber:
         - '+555123456'
         sshpubkey:
+        password: password
         uidnumber: 1001
         gidnumber: 100
         ipa_host: ipa.example.com

@@ -72,7 +72,4 @@
     register: job_result
     until: job_result.finished
     retries: 100
-  - name: Include a play after another play
-    import_playbook: kerberos.yml
-
-  
+...

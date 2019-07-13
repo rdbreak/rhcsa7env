@@ -1,6 +1,5 @@
 ---
 - hosts: system
-  become: true
   strategy: free 
   tasks:
   - name: Preparing environment
@@ -68,7 +67,7 @@
     async: 500
     poll: 0
     register: ipa_sleeper
-      #responses:
+     #responses:
       #  (?i)user: "admin"
       #  (?i)password: "password"
   - name: Enabling services
@@ -83,5 +82,3 @@
   - name: Rebooting machine
     reboot:
       reboot_timeout: 60
-#  - name: Adding Kerberos
-#    include: kerberos.yml
