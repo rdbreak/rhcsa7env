@@ -45,7 +45,7 @@
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password    
-  - name: Copy Keytab To FTP Server
-    command: cp /etc/krb5.keytab /var/ftp/pub/system.keytab
+  - name: Copying Keytab To Apache Server
+    command: cp /etc/krb5.keytab /var/www/html/system.keytab
   - name: Adjusting Permissions
-    command: chmod 0644 /var/ftp/pub/system.keytab
+    command: chmod 0644 /var/www/html/system.keytab

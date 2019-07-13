@@ -42,19 +42,11 @@
       path: /etc/hosts
       line: 192.168.55.6 system1.example.com system1
       create: yes
-  - name: Configuring network
-    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
-  - name: Finishing Environment Package Installation...
+  - name: ---> Not Failing, Just Finishing Environment Package Installation...
     async_status: jid={{ yum_sleeper.ansible_job_id }}
     register: job_result
     until: job_result.finished
     retries: 30
-  - name: Configuring IPA server (Estimated Time - 5 minutes)
-    command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
-    async: 1000
-    poll: 0
-    register: ipa_config_sleeper
-    ignore_errors: yes
   - name: Enabling services
     service: name={{item}} enabled=true
     with_items:
@@ -68,6 +60,16 @@
     command: firewall-cmd --permanent --add-service=http --add-service=https --add-service=ntp --add-service=dns --add-service=kerberos --add-service=ldap --add-service=ldaps --add-service=ftp
   - name: Reloading Firewall
     command: firewall-cmd --reload
+  - name: Configuring network
+    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
+  - name: Reloading Network Configuration
+    shell: nmcli con up "System eth1"  
+  - name: Configuring IPA server (Estimated Time - 5 minutes)
+    command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+    async: 1000
+    poll: 0
+    register: ipa_config_sleeper
+    ignore_errors: yes
   - name: Still Working On IPA Configuration...It takes time ¯\_(ツ)_/¯
     async_status: jid={{ ipa_config_sleeper.ansible_job_id }}
     register: job_result

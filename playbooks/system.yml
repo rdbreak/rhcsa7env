@@ -1,6 +1,7 @@
 ---
 - hosts: system
-  strategy: free 
+  strategy: free
+  gather_facts: False
   tasks:
   - name: Preparing environment
     shell: rm -rf /etc/yum.repos.d/*
@@ -8,7 +9,7 @@
     file:
       path: /etc/yum.repos.d/ipa.repo
       state: touch
-      mode: u=rw,g=r,o=r
+#      mode: u=rw,g=r,o=r
   - name: Building Repo File
     blockinfile:
       path: /etc/yum.repos.d/ipa.repo
