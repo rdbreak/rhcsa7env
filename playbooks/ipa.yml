@@ -48,7 +48,7 @@
     async_status: jid={{ yum_sleeper.ansible_job_id }}
     register: job_result
     until: job_result.finished
-    retries: 20
+    retries: 30
   - name: Configuring IPA server (Estimated Time - 5 minutes)
     command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
     async: 1000
@@ -71,6 +71,8 @@
     async_status: jid={{ ipa_config_sleeper.ansible_job_id }}
     register: job_result
     until: job_result.finished
-    retries: 70
+    retries: 100
+  - name: Include a play after another play
+    import_playbook: kerberos.yml
 
   
