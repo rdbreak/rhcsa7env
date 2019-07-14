@@ -7,7 +7,7 @@
     command: echo vagrant | sudo passwd vagrant --stdin
   - name: Building Repo File
     blockinfile:
-      path: /etc/yum.repos.d/ipa.repo
+      dest: /etc/yum.repos.d/ipa.repo
       block: |
        [ipa]
        name=ipa repo
