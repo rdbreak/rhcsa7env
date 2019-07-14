@@ -46,3 +46,5 @@
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password    
+
+  
