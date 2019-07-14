@@ -40,7 +40,7 @@ config.vm.define "system" do |system|
     system.customize ['storageattach', :id,  '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk]
   end
   
-    config.vm.provision "shell", inline: <<-SHELL
+    system.vm.provision "shell", inline: <<-SHELL
     yes| sudo mkfs.ext4 /dev/sdb
     SHELL
 
