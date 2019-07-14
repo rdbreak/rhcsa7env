@@ -15,13 +15,12 @@ config.vm.define "ipa" do |ipa|
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   ipa.vm.network "private_network", ip: "192.168.55.5"
+  ipa.vm.network "private_network", ip: "192.168.55.100"
+  ipa.vm.network "private_network", ip: "192.168.55.101"
+
   ipa.vm.provider :virtualbox do |ipa|
     ipa.customize ['modifyvm', :id,'--memory', '2048']
     end
-#  ipa.vm.provision "ansible" do |ansible|
-#    ansible.version = "latest"
-#    ansible.playbook = 'playbooks/ipa.yml'
-#  end
 end
 config.vm.define "system" do |system|
   system.vm.box = "puppetlabs/centos-7.0-64-nocm"

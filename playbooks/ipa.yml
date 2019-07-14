@@ -53,9 +53,9 @@
     command: firewall-cmd --reload
   - name: Configuring network
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
-  - name: Reloading Network Configuration
+  - name: Reloaded Network Config. Configuring IPA server...(Est. Time - 7 minutes)
     shell: nmcli con up "System eth1"  
-  - name: Configuring IPA server (Estimated Time - 7 minutes)
+  - name: Finishing IPA server Configuration
     command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
 #    async: 1500
 #    poll: 0

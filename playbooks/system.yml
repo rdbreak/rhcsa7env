@@ -4,11 +4,7 @@
   gather_facts: False
   tasks:
   - name: Setting up user
-    user:
-      name: user
-      comment: user
-      uid: 2000
-      group: wheel
+    command: useradd -G wheel user
   - name: Changing User Password
     command: echo password | sudo passwd user --stdin
   - name: Building Repo File
@@ -50,9 +46,9 @@
     command: nmcli con up "System enp0s8" 
   - name: Fixing Resolv File
     command: echo 'nameserver 192.168.55.5' > /etc/resolv.conf
-  - name: Enabling Authconfig
+  - name: Enabling Authconfig. Installing Environment Packages...
     command: authconfig --update --enablesssd --enablesssdauth --enablemkhomedir
-  - name: Installing Environment Packages
+  - name: Environment Packages Installed. Configuring IPA client
     command: yum install -y ipa-client man-pages
 #    async: 500
 #    poll: 0
@@ -62,7 +58,7 @@
 #    register: job_result
 #    until: job_result.finished
 #    retries: 40  
-  - name: Configuring IPA client
+  - name: IPA client Configured
     command: ipa-client-install --enable-dns-updates -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
     ignore_errors: yes
     async: 500
