@@ -17,7 +17,7 @@
 192.168.55.6
 
 ### Username/Password
-- Username - user
+- Username - vagrant
 - Password - vagrant
 - For root - use `sudo` or `sudo su`
 ### LDAP users
