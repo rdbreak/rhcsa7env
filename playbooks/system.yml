@@ -15,6 +15,7 @@
        gpgcheck=1
        gpgkey=http://reflector.westga.edu/repos/CentOS/7/os/x86_64/RPM-GPG-KEY-CentOS-7
        enabled=1
+    tags: repo
   - name: Disabling services
     selinux:
       state: disabled
