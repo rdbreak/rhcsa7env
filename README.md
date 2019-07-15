@@ -23,16 +23,15 @@ The first time you run the vagrant up command, it will download the OS images fo
 ### This environment includes two systems:
 - ipa.example.com
 - system1.example.com
-Access by `vagrant ssh ipa` or `vagrant ssh system1`
+
 ### Network Details:
 ###### ipa
 192.168.55.5
 ###### system1
 192.168.55.6
 
-### Username/Password
-- Username - vagrant
-- Password - vagrant
+### Accessing the systems
+Access by `vagrant ssh ipa` or `vagrant ssh system1`
 - For root - use `sudo` or `sudo su`
 ### LDAP users
 - Username = dave, lisa
