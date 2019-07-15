@@ -23,12 +23,12 @@
       path: /etc/hosts
       line: 192.168.55.5 ipa.example.com ipa
       create: yes
-  - name: Adding system1 address to hosts file
+  - name: Adding system1 address to hosts file, Installing Packages...
     lineinfile:
       path: /etc/hosts
       line: 192.168.55.6 system1.example.com system1
       create: yes
-  - name: Installing Environment Packages
+  - name: Environment Packages Installed
     command: yum install -y ipa-server ipa-server-dns vsftpd
 #    async: 600
 #    poll: 0

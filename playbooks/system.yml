@@ -1,10 +1,10 @@
 ---
-- hosts: system
+- hosts: system1
   strategy: free
   gather_facts: False
   tasks:
   - name: Changing User Password
-    command: echo vagrant | sudo passwd vagrant --stdin
+    shell: echo vagrant | sudo passwd vagrant --stdin
   - name: Building Repo File
     blockinfile:
       path: /etc/yum.repos.d/ipa.repo
@@ -23,20 +23,20 @@
       dest: /etc/hosts
       regexp: '^127\.0\.0\.1'
       state: absent
-  - name: Adding system IP address to hosts file
+  - name: Rebuilding host file
     lineinfile:
       path: /etc/hosts
-      line: 192.168.55.6 system1.example.com system1
+      line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
       create: yes
   - name: Adding IPA address to hosts file
     lineinfile:
       path: /etc/hosts
       line: 192.168.55.5 ipa.example.com ipa
       create: yes
-  - name: Rebuilding host file
+  - name: Adding system IP address to hosts file
     lineinfile:
       path: /etc/hosts
-      line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+      line: 192.168.55.6 system1.example.com system1
       create: yes
   - name: Configuring network
     command: nmcli con mod "System enp0s8" ipv4.addresses "192.168.55.6/24 192.168.55.1" ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual

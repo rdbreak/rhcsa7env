@@ -3,13 +3,6 @@
   strategy: free
   gather_facts: False
   tasks:
-  - name: Adding NFS service to System1
-    ipa_service:
-      name: nfs/system1.example.com
-      state: present
-      ipa_host: ipa.example.com
-      ipa_user: admin
-      ipa_pass: password 
   - name: Adding IPA user 'dave'
     ipa_user:
         name: dave
@@ -46,5 +39,3 @@
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password    
-
-  
