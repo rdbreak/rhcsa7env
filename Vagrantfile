@@ -22,7 +22,7 @@ config.vm.define "system1" do |system1|
   system1.vm.hostname = "system1.example.com"
   system1.vm.network "private_network", ip: "192.168.55.6"
   system1.vm.network "private_network", ip: "192.168.55.101"
-  system1.vm.network "private_network", ip: "192.168.55.101"
+  system1.vm.network "private_network", ip: "192.168.55.102"
   system1.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
   system1.vm.provision :shell, :inline => "sudo rm -rf /etc/yum.repos.d/* ; touch /etc/yum.repos.d/ipa.repo;", run: "always"
   system1.vm.provider "virtualbox" do |system1|
