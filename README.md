@@ -23,7 +23,7 @@ The first time you run the vagrant up command, it will download the OS images fo
 ### This environment includes two systems:
 - ipa.example.com
 - system1.example.com
-
+Access by `vagrant ssh ipa` or `vagrant ssh system1`
 ### Network Details:
 ###### ipa
 192.168.55.5
