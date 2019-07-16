@@ -66,7 +66,7 @@
 #    until: job_result.finished
 #    retries: 40  
   - name: IPA client Configured
-    command: ipa-client-install --enable-dns-updates -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
+    command: ipa-client-install --enable-dns-updates --mkhomedir -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
     ignore_errors: yes
     async: 500
     poll: 0
