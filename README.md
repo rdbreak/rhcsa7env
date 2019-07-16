@@ -24,14 +24,18 @@ The first time you run the vagrant up command, it will download the OS images fo
 - ipa.example.com
 - system1.example.com
 
-### Network Details:
+### System Details:
 ###### ipa
 192.168.55.5
 ###### system1
 192.168.55.6
 
+There is a repo available to use from `http://ipa.example.com/rpms`
+
 ### Accessing the systems
-Access by `vagrant ssh ipa` or `vagrant ssh system1`
+Remember to add the IP addresses to your local host file if you want to connect to the guest systems with the hostname.
+Username - vagrant
+Password - vagrant
 - For root - use `sudo` or `sudo su`
 ### LDAP users
 - Username = dave, lisa

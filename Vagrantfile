@@ -9,8 +9,11 @@ config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
   ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
   ipa.vm.provision :shell, :inline => "sudo yum install -y wget | grep -v 'warning\|Error'; sudo cd /etc/pki/rpm-gpg;  sudo wget http://yum.theforeman.org/releases/1.8/RPM-GPG-KEY-foreman; sudo rpm --import RPM-GPG-KEY-foreman; sudo rpm -qa gpg* ; sudo rpm -qi gpg-pubkey-225c9b71-54fda121;", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum install -y epel-release; sudo yum -y install python36 | grep -v 'DEPRECATION'; sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py | grep -v 'DEPRECATION' ; python get-pip.py  | grep -v 'DEPRECATION'; sudo pip install -U pip | grep -v 'DEPRECATION'; sudo pip install pexpect | grep -v 'DEPRECATION';", run: "always"
-  ipa.vm.hostname = "ipa.test.example.com"
+  ipa.vm.provision :shell, :inline => "sudo yum install -y epel-release; sudo yum -y install python36; sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
+  ipa.vm.provision :shell, :inline => "sudo mkdir -p /var/www/html/rpms;", run: "always"
+  ipa.vm.provision :shell, :inline => "for i in \"Development Tools\" \"Server with GUI\" \"File and Print Server\" \"Web Server\" ; do yum group install \"$i\" --downloadonly --downloaddir=/var/www/html/rpms;done;", run: "always"
+  ipa.vm.provision :shell, :inline => "yum install -y httpd-manual selinux\* sssd\* --downloadonly --downloaddir=/var/www/html/rpms;", run: "always"
+  ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
   ipa.vm.provider :virtualbox do |ipa|
     ipa.customize ['modifyvm', :id,'--memory', '2048']
@@ -24,7 +27,7 @@ config.vm.define "system1" do |system1|
   system1.vm.network "private_network", ip: "192.168.55.101"
   system1.vm.network "private_network", ip: "192.168.55.102"
   system1.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-  system1.vm.provision :shell, :inline => "sudo rm -rf /etc/yum.repos.d/* ; touch /etc/yum.repos.d/ipa.repo;", run: "always"
+#  system1.vm.provision :shell, :inline => "sudo rm -rf /etc/yum.repos.d/* ; touch /etc/yum.repos.d/ipa.repo;", run: "always"
   system1.vm.provider "virtualbox" do |system1|
     system1.memory = "1024"
 

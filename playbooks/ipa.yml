@@ -1,7 +1,7 @@
 ---
 - hosts: ipa
   strategy: free
-  gather_facts: False
+  gather_facts: true
   tasks:
   - name: Fixing hosts file
     lineinfile:
@@ -29,7 +29,15 @@
       line: 192.168.55.6 system1.example.com system1
       create: yes
   - name: Environment Packages Installed
-    command: yum install -y ipa-server ipa-server-dns vsftpd
+    yum:
+      name:
+        - ipa-server
+        - ipa-server-dns
+        - vsftpd
+        - createrepo
+      state: present
+  - name: Configuring Repo For System
+    command: createrepo /var/www/html/rpms
 #    async: 600
 #    poll: 0
 #    register: yum_sleeper
@@ -57,6 +65,44 @@
     shell: nmcli con up "System eth1"  
   - name: Finishing IPA server Configuration
     command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+  - name: Adding IPA user 'dave'
+    ipa_user:
+        name: dave
+        state: present
+        krbpasswordexpiration: 20200119235959
+        givenname: dave
+        sn: dave
+        mail:
+        - dave@example.com
+        telephonenumber:
+        - '+555123456'
+        sshpubkey:
+        password: password
+        uidnumber: 1001
+        gidnumber: 1000
+        ipa_host: ipa.example.com
+        ipa_user: admin
+        ipa_pass: password
+  - name: Adding IPA user 'lisa'
+    ipa_user:
+        name: lisa
+        state: present
+        krbpasswordexpiration: 20200119235959
+        givenname: lisa
+        sn: lisa
+        mail:
+        - lisa@example.com
+        telephonenumber:
+        - '+555123456'
+        sshpubkey:
+        password: password
+        uidnumber: 1002
+        gidnumber: 1001
+        ipa_host: ipa.example.com
+        ipa_user: admin
+        ipa_pass: password   
+  - name: Setting SELinux To Permissive
+    shell: setenforce 0
 #    async: 1500
 #    poll: 0
 #    register: ipa_config_sleeper
