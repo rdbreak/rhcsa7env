@@ -9,9 +9,12 @@
 ### Install at once with the command below:
 (`brew install ansible ; brew install python ; brew cask install vagrant ; brew cask install VirtualBox`)
 
+If you're using a Mac, Gatekeeper will block virtualbox from installing. All you have to do is go to System Preferences and click Allow under the General tab and rerun installation.
+
 ## Set Up Instructions
-1. Create a seperate `/bin` directory and `cd` to it. 
+1. Create a seperate `~/bin` directory and `cd` to it. 
 2. Clone the environment repo to it with `git clone https://github.com/rdbreak/rhcsa7env.git`
+3. Change to the `rhcsa7env` directory that is now in your `~/bin` directory.
 3. Run `vagrant up --provider virtualbox` to deploy the environment _(You must be in the directory you cloned the repo to in order to run vagrant commands.)_
 
 *Also, don't be spooked by any red font during the setup process. It won't have an affect on your exam environment.* 
@@ -34,9 +37,9 @@ There is a repo available to use from `http://ipa.example.com/rpms`
 
 ### Accessing the systems
 Remember to add the IP addresses to your local host file if you want to connect to the guest systems with the hostname.
-Username - vagrant
-Password - vagrant
+`ssh vagrant@192.168.55.5` - Password - `password` 
 - For root - use `sudo` or `sudo su`
+
 ### LDAP users
 - Username = dave, lisa
 - Password = password
