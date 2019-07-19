@@ -43,6 +43,7 @@ config.vm.define "system1" do |system1|
     SHELL
   system1.vm.provision "ansible" do |ansible|
     ansible.version = "latest"
+    ansible.compatibility_mode = "2.0"
     ansible.limit = "all"
     ansible.playbook = 'playbooks/master.yml'
   end
