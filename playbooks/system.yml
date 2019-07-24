@@ -83,3 +83,16 @@
   - name: Rebooting machine
     reboot:
       reboot_timeout: 60
+  - name: Welcome to the RHCSA 7 Study/Test Environment!
+    debug:
+      msg:
+        - 'Accessing The Systems:'
+        - '- IPA - 192.168.55.5'
+        - '- System 1 - 192.168.55.6'
+        - '- Username - vagrant'
+        - '- Password - vagrant'
+        - '- For root - use `sudo` or `sudo su`'
+        - '- Access example - `ssh vagrant@192.168.55.5`'
+        - 'LDAP Users'
+        - '- Username = dave, lisa'
+        - '- Password = password'
