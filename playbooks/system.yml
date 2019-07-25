@@ -96,3 +96,5 @@
         - 'LDAP Users'
         - '- Username = dave, lisa'
         - '- Password = password'
+        - 'Repo is available to use from `http://ipa.example.com/rpms`'
+        - '- Happy Studying!'
