@@ -12,7 +12,7 @@ config.vm.define "ipa" do |ipa|
   ipa.vm.provision :shell, :inline => "sudo yum install -y epel-release; sudo yum -y install python36; sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
   ipa.vm.provision :shell, :inline => "sudo mkdir -p /var/www/html/rpms;", run: "always"
   ipa.vm.provision :shell, :inline => "for i in \"Development Tools\" \"Server with GUI\" \"File and Print Server\" \"Web Server\" ; do yum group install \"$i\" --downloadonly --downloaddir=/var/www/html/rpms;done;", run: "always"
-  ipa.vm.provision :shell, :inline => "yum install -y httpd-manual selinux\* sssd\* --downloadonly --downloaddir=/var/www/html/rpms;", run: "always"
+  ipa.vm.provision :shell, :inline => "yum install -y httpd-manual selinux\* sssd\* bash-completion --downloadonly --downloaddir=/var/www/html/rpms;", run: "always"
   ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
   ipa.vm.provider :virtualbox do |ipa|
@@ -39,7 +39,7 @@ config.vm.define "system1" do |system1|
   end
   
     system1.vm.provision "shell", inline: <<-SHELL
-    yes| sudo mkfs.ext4 /dev/sdb
+    yes| sudo mkfs.ext2 /dev/sdb
     SHELL
   system1.vm.provision "ansible" do |ansible|
     ansible.version = "latest"

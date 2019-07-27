@@ -1,16 +1,20 @@
 # RHCSA 7 Study/Test Environment powered by Ansible and Vagrant. 
 
+
 ## Required software before setting up:
+### Linux/Mac
 - Ansible - (`yum install ansible` or `brew install ansible`)
 - Python - (`yum install python`or `brew install python`)
 - [Vagrant](https://www.vagrantup.com/downloads.html) - (`brew cask install vagrant`)
 - [Virtualbox](https://www.virtualbox.org/wiki/Downloads) (`brew cask install VirtualBox`)
 - Virtual Box Extension Pack (`brew cask install virtualbox-extension-pack`)
 
+If you're using a Mac, Gatekeeper will block virtualbox from installing. All you have to do is go to System Preferences and click Allow under the General tab and rerun installation.
+
 ### Install at once with the command below:
 (`brew install ansible ; brew install python ; brew cask install vagrant ; brew cask install VirtualBox ; brew cask install virtualbox-extension-pack`)
 
-If you're using a Mac, Gatekeeper will block virtualbox from installing. All you have to do is go to System Preferences and click Allow under the General tab and rerun installation.
+Now you should be ready to follow the next steps and get the deployment up and running!
 
 ## Set Up Instructions
 1. Create a seperate `~/bin` directory and `cd` to it. 
