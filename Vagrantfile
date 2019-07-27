@@ -39,7 +39,7 @@ config.vm.define "system1" do |system1|
   end
   
     system1.vm.provision "shell", inline: <<-SHELL
-    yes| sudo mkfs.ext2 /dev/sdb
+    yes| sudo mkfs.ext4 /dev/sdb
     SHELL
   system1.vm.provision "ansible" do |ansible|
     ansible.version = "latest"
