@@ -12,12 +12,15 @@ config.vm.define "ipa" do |ipa|
   ipa.vm.provision :shell, :inline => "sudo yum install -y epel-release; sudo yum -y install python36; sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
   ipa.vm.provision :shell, :inline => "sudo mkdir -p /var/www/html/rpms;", run: "always"
   ipa.vm.provision :shell, :inline => "for i in \"Development Tools\" \"Server with GUI\" \"File and Print Server\" \"Web Server\" ; do yum group install \"$i\" --downloadonly --downloaddir=/var/www/html/rpms;done;", run: "always"
-  ipa.vm.provision :shell, :inline => "yum install -y httpd-manual selinux\* sssd\* bash-completion --downloadonly --downloaddir=/var/www/html/rpms;", run: "always"
+  ipa.vm.provision :shell, :inline => "yum install -y httpd-manual selinux\* sssd\* bash-completion ipa-client man-pages --downloadonly --downloaddir=/var/www/html/rpms;", run: "always"
   ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
   ipa.vm.provider :virtualbox do |ipa|
     ipa.customize ['modifyvm', :id,'--memory', '2048']
     end
+  ipa.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "playbooks/ipa.yml"
+  end
 end
   
 config.vm.define "system1" do |system1|
@@ -41,11 +44,11 @@ config.vm.define "system1" do |system1|
     system1.vm.provision "shell", inline: <<-SHELL
     yes| sudo mkfs.ext4 /dev/sdb
     SHELL
-  system1.vm.provision "ansible" do |ansible|
-    ansible.version = "latest"
-    ansible.compatibility_mode = "2.0"
-    ansible.limit = "all"
-    ansible.playbook = 'playbooks/master.yml'
+  system1.vm.provision :shell, :inline => "sudo yum group install -y \"Development Tools\" ; sudo yum install -y python-devel curl ;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
+  system1.vm.provision :shell, :inline => "pip install ansible", run: "always"
+  system1.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = 'playbooks/system.yml'
+  system1.vm.provision :shell, :inline => "reboot", run: "always"
   end
 end
 end

@@ -83,6 +83,7 @@
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password
+    
   - name: Adding IPA user 'lisa'
     ipa_user:
         name: lisa

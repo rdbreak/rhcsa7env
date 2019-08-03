@@ -1,6 +1,7 @@
 ---
 - hosts: system1
   strategy: free
+  become: true
   gather_facts: False
   tasks:
   - name: Changing User Password
@@ -80,9 +81,9 @@
     register: job_result
     until: job_result.finished
     retries: 40
-  - name: Rebooting machine
-    reboot:
-      reboot_timeout: 60
+#  - name: Rebooting machine
+#    reboot:
+#      reboot_timeout: 60
   - name: Welcome to the RHCSA 7 Study/Test Environment!
     debug:
       msg:
@@ -92,7 +93,7 @@
         - '- Username - vagrant'
         - '- Password - vagrant'
         - '- For root - use `sudo` or `sudo su`'
-        - '- Access example - `ssh vagrant@192.168.55.6`'
+        - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system`'
         - 'LDAP Users'
         - '- Username = dave, lisa'
         - '- Password = password'
