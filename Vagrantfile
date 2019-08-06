@@ -7,12 +7,12 @@ config.ssh.insert_key = false
 config.vm.box_check_update = false
 config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
-  ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum install -y wget | grep -v 'warning\|Error'; sudo cd /etc/pki/rpm-gpg;  sudo wget http://yum.theforeman.org/releases/1.8/RPM-GPG-KEY-foreman; sudo rpm --import RPM-GPG-KEY-foreman; sudo rpm -qa gpg* ; sudo rpm -qi gpg-pubkey-225c9b71-54fda121;", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum install -y epel-release createrepo; sudo yum -y install python36; sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo mkdir -p /var/www/html/rpms;", run: "always"
-  ipa.vm.provision :shell, :inline => "for i in \"Development Tools\" \"Server with GUI\" \"File and Print Server\" \"Web Server\" ; do yum group install \"$i\" --downloadonly --downloaddir=/var/www/html/rpms;done;", run: "always"
-  ipa.vm.provision :shell, :inline => "yum install -y httpd-manual selinux\* sssd\* bash-completion ipa-client man-pages --downloadonly --downloaddir=/var/www/html/rpms; createrepo /var/www/html/rpms", run: "always"
+  ipa.vm.provision :shell, :inline => " sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config;  systemctl restart sshd;", run: "always"
+  ipa.vm.provision :shell, :inline => " yum install -y wget createrepo;", run: "always"
+  ipa.vm.provision :shell, :inline => " yum -y install python36;  curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; pip install -U pip ; pip install pexpect;", run: "always"
+  ipa.vm.provision :shell, :inline => " mkdir -p /var/www/html/rpms;", run: "always"
+  ipa.vm.provision :shell, :inline => "for i in \"Development Tools\" \"Server with GUI\" \"Web Server\"; do yum group install \"$i\" --downloadonly --downloaddir=/var/www/html/rpms;done;", run: "always"
+  ipa.vm.provision :shell, :inline => "createrepo /var/www/html/rpms", run: "always"
   ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
   ipa.vm.provider :virtualbox do |ipa|
@@ -29,8 +29,7 @@ config.vm.define "system1" do |system1|
   system1.vm.network "private_network", ip: "192.168.55.6"
   system1.vm.network "private_network", ip: "192.168.55.101"
   system1.vm.network "private_network", ip: "192.168.55.102"
-  system1.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-#  system1.vm.provision :shell, :inline => "sudo rm -rf /etc/yum.repos.d/* ; touch /etc/yum.repos.d/ipa.repo;", run: "always"
+  system1.vm.provision :shell, :inline => " sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config;  systemctl restart sshd; echo vagrant |  passwd vagrant --stdin;", run: "always"
   system1.vm.provider "virtualbox" do |system1|
     system1.memory = "1024"
 
@@ -42,9 +41,9 @@ config.vm.define "system1" do |system1|
   end
   
     system1.vm.provision "shell", inline: <<-SHELL
-    yes| sudo mkfs.ext4 /dev/sdb
+    yes|  mkfs.ext4 /dev/sdb
     SHELL
-  system1.vm.provision :shell, :inline => "sudo yum group install -y \"Development Tools\" ; sudo yum install -y python-devel curl ;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
+  system1.vm.provision :shell, :inline => " yum group install -y \"Development Tools\" ;  yum install -y python-devel curl ; curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ;  pip install -U pip ;  pip install pexpect;", run: "always"
   system1.vm.provision :shell, :inline => "pip install ansible", run: "always"
   system1.vm.provision "ansible_local" do |ansible|
     ansible.playbook = 'playbooks/system.yml'

@@ -113,4 +113,35 @@
 #    register: job_result
 #    until: job_result.finished
 #    retries: 200
+  - name: Creating Welcome Message
+    file:
+      path: /etc/profile.d/welcome.sh
+      state: touch
+      mode: 0755
+  - name: Building Welcome Message
+    blockinfile:
+      dest: /etc/profile.d/welcome.sh
+      block: |
+         #!/bin/bash
+         #
+         echo -e '
+         #             _         _         _          
+         #           /\ \      /\ \      / /\        
+         #           \ \ \    /  \ \    / /  \       
+         #           /\ \_\  / /\ \ \  / / /\ \      
+         #          / /\/_/ / / /\ \_\/ / /\ \ \     
+         #         / / /   / / /_/ / / / /  \ \ \    
+         #        / / /   / / /__\/ / / /___/ /\ \   
+         #       / / /   / / /_____/ / /_____/ /\ \  
+         #   ___/ / /__ / / /     / /_________/\ \ \ 
+         #  /\__\/_/___/ / /     / / /_       __\ \_\
+         #  \/_________\/_/      \_\___\     /____/_/
+         '"#
+         # Why are you here? You should be working on the system hosts...
+         # Anyway, try not to reboot me or bad stuff can happen.
+         #
+         # You are logged into `hostname` as the `whoami` user
+         # This system is running `cat /etc/redhat-release`
+         # kernel is `uname -r`
+         "
 ...
