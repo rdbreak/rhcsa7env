@@ -2,6 +2,7 @@
 - hosts: ipa
   strategy: free
   gather_facts: true
+  become: true
   tasks:
   - name: Fixing hosts file
     lineinfile:
@@ -23,29 +24,20 @@
       path: /etc/hosts
       line: 192.168.55.5 ipa.example.com ipa
       create: yes
-  - name: Adding system1 address to hosts file, Installing Packages...
+  - name: Adding system1 address to hosts file
     lineinfile:
       path: /etc/hosts
       line: 192.168.55.6 system1.example.com system1
       create: yes
-  - name: Environment Packages Installed
-    yum:
-      name:
-        - ipa-server
-        - ipa-server-dns
-        - vsftpd
-        - createrepo
-      state: present
-  - name: Configuring Repo For System
-    command: createrepo /var/www/html/rpms
-#    async: 600
-#    poll: 0
-#    register: yum_sleeper
-#  - name: ---> Not Failing, Just Finishing Environment Package Installation...
-#    async_status: jid={{ yum_sleeper.ansible_job_id }}
-#    register: job_result
-#    until: job_result.finished
-#    retries: 50
+  - name: Adding repo address to hosts file
+    lineinfile:
+      path: /etc/hosts
+      line: 192.168.55.4 repo.example.com repo
+      create: yes
+  - name: Configuring network
+    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
+#  - name: Reloaded Network.
+#    shell: nmcli con up "System eth1"
   - name: Enabling services
     service: name={{item}} enabled=true
     with_items:
@@ -57,14 +49,10 @@
     service: name=firewalld state=started
   - name: Enabling Firewall Services
     command: firewall-cmd --permanent --add-service=http --add-service=https --add-service=ntp --add-service=dns --add-service=kerberos --add-service=ldap --add-service=ldaps --add-service=ftp
-  - name: Reloading Firewall
+  - name: Reloaded Firewall. Configuring IPA server...(Est. Time - 7 minutes)
     command: firewall-cmd --reload
-  - name: Configuring network
-    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
-  - name: Reloaded Network. Configuring IPA server...(Est. Time - 7 minutes)
-    shell: nmcli con up "System eth1"  
   - name: Finishing IPA server Configuration
-    command: sudo ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+    command: ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
   - name: Adding IPA user 'dave'
     ipa_user:
         name: dave
@@ -104,15 +92,7 @@
         ipa_pass: password   
   - name: Setting SELinux To Permissive
     shell: setenforce 0
-#    async: 1500
-#    poll: 0
-#    register: ipa_config_sleeper
     ignore_errors: yes
-#  - name: Still Working On IPA Configuration...It takes time ¯\_(ツ)_/¯
-#    async_status: jid={{ ipa_config_sleeper.ansible_job_id }}
-#    register: job_result
-#    until: job_result.finished
-#    retries: 200
   - name: Creating Welcome Message
     file:
       path: /etc/profile.d/welcome.sh

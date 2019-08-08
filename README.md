@@ -18,7 +18,7 @@ Now you should be ready to follow the next steps and get the deployment up and r
 1. Create a separate `~/bin` directory and `cd` to it.  (The directory doesn't have to be ~/bin, it can be anything you want.)
 2. Clone the environment repo to it with `git clone https://github.com/rdbreak/rhcsa7env.git`
 3. Change to the `rhcsa7env` directory that is now in your `~/bin` directory.
-3. Run `vagrant up --provider virtualbox` to deploy the environment 
+4. Run `vagrant up --provider virtualbox` to deploy the environment 
 
 ## Once the above software is installed. Do the following if you're running the environment on Windows:
 1. Create a separate `~/bin` directory and `cd` to it.  (The directory doesn't have to be ~/bin, it can be anything you want.)
@@ -30,20 +30,29 @@ Now you should be ready to follow the next steps and get the deployment up and r
 
 _NOTE - You can also use the VirtualBox console to interact with the VMs or through a terminal. If you need to reset the root password, you would need to use the console._
 
+## (Optional) Install Github Desktop to make pulling down changes easier
+_NOTE this requires a free Github account_
+1. Navigate to https://desktop.github.com/ and download Github Desktop.
+2. Create or sign in to your account.
+3. Clone or pull changes to respctive repo
+
 ## Other Useful Information:
-I'm constantly making upgrades to the environments, so every once and awhile run `git pull` in the repo directory to pull down changes. The first time you run the vagrant up command, it will download the OS images for later use. In other words, it will take longest the first time around but will be faster when it is deployed again. You can run `vagrant destroy -f` to destroy your environment at anytime. **This will erase everything**. This environment is meant to be reuseable, If you run the `vagrant up --provider virtualbox` command after destroying the environment, the OS image will already be downloaded and environment will deploy faster. Once the setup is complete, the ipa server and client for realm EXAMPLE.COM will already be setup and paired. Deployment should take around 15 minutes depending on your computer. You shouldn't need to access the IPA server during your practice exams. Everything should be provided that you would normally need during an actual exam. Hope this helps  in your studies!
+I'm constantly making upgrades to the environments, so every once and awhile run `git pull` in the repo directory to pull down changes. The first time you run the vagrant up command, it will download the OS images for later use. In other words, it will take longest the first time around but will be faster when it is deployed again. You can run `vagrant destroy -f` to destroy your environment at anytime. **This will erase everything**. This environment is meant to be reuseable, If you run the `vagrant up --provider virtualbox` command after destroying the environment, the OS image will already be downloaded and environment will deploy faster. Once the setup is complete, the ipa server and client for realm EXAMPLE.COM will already be setup and paired. Deployment should take around 15 minutes depending on your computer. You shouldn't need to access the IPA server or Repo server during your practice exams. Everything should be provided that you would normally need during an actual exam. Hope this helps in your studies!
 
 ### This environment includes two systems:
 - ipa.example.com
+- repo.example.com
 - system1.example.com
 
 ### System Details:
+###### repo
+192.168.55.4
 ###### ipa
 192.168.55.5
 ###### system1
 192.168.55.6
 
-There is a repo available to use from `http://ipa.example.com/rpms`
+There is a repo available to use from `http://repo.example.com/rpms`
 
 ### Accessing the systems
 Remember to add the IP addresses to your local host file if you want to connect to the guest systems with the hostname.
