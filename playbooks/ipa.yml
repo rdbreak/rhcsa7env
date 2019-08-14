@@ -4,6 +4,8 @@
   gather_facts: true
   become: true
   tasks:
+  - name: Setting Hostname
+    command: hostnamectl set-hostname ipa.example.com
   - name: Fixing hosts file
     lineinfile:
       dest: /etc/hosts
@@ -34,17 +36,18 @@
       path: /etc/hosts
       line: 192.168.55.4 repo.example.com repo
       create: yes
+  - name: Packages Installed.
+    yum:
+      name:
+        - ipa-server
+        - ipa-server-dns
   - name: Configuring network
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
-#  - name: Reloaded Network.
-#    shell: nmcli con up "System eth1"
   - name: Enabling services
     service: name={{item}} enabled=true
     with_items:
       - httpd
-      - vsftpd
       - firewalld
-      - ntpd
   - name: Starting Firewalld
     service: name=firewalld state=started
   - name: Enabling Firewall Services

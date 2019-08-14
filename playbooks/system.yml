@@ -4,30 +4,35 @@
   become: true
   gather_facts: False
   tasks:
-#  - name: Changing User Password
-#    shell: echo vagrant | sudo passwd vagrant --stdin
-#  - name: Erasing Repos
-#    shell: rm -rf /etc/yum.repos.d/*
+  - name: Setting Hostname
+    command: hostnamectl set-hostname system1.example.com
   - name: Fixing Resolv File
     command: echo 'nameserver 192.168.55.5' > /etc/resolv.conf
-#  - name: Creating Temporary Repo File
-#    file:
-#      path: /etc/yum.repos.d/ipa.repo
-#      state: touch
-#      mode: 0755
-#  - name: Building Repo File
-#    blockinfile:
-#      dest: /etc/yum.repos.d/ipa.repo
-#      block: |
-#       [ipa]
-#       name=ipa repo
-#       baseurl=http://repo/rpms
-#       gpgcheck=0
-#       enabled=1
-#    tags: repo
-#  - name: Passively Disabling SELinux
-#    shell: setenforce 0
-#    ignore_errors: yes
+  - name: Creating Temporary Repo File
+    file:
+      path: /etc/yum.repos.d/ipa.repo
+      state: touch
+      mode: 0755
+  - name: Creating Temporary Repo File
+    file:
+      path: /etc/yum.repos.d/ipa.repo
+      state: touch
+      mode: 0755
+  - name: Building Repo File
+    blockinfile:
+      dest: /etc/yum.repos.d/ipa.repo
+      block: |
+       [ipa]
+       name=ipa repo
+       baseurl=http://reflector.westga.edu/repos/CentOS/7/os/x86_64/
+       gpgcheck=1
+       gpgkey=http://reflector.westga.edu/repos/CentOS/7/os/x86_64/RPM-GPG-KEY-CentOS-7
+       enabled=1
+  - name: Installing Packages
+    shell: yum install -y ipa-client
+  - name: Erasing Repos
+    shell: yum clean all ; rm -rf /etc/yum.repos.d/*
+    ignore_errors: true
   - name: Disabling services
     selinux:
       state: disabled
@@ -59,23 +64,8 @@
       create: yes
   - name: Configuring network
     command: nmcli con mod "System enp0s8" ipv4.addresses "192.168.55.6/24 192.168.55.1" ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
-  - name: Saving network config
-    command: nmcli con up "System enp0s8" 
-  - name: Enabling Authconfig. Installing Environment Packages...
+  - name: Enabling Authconfig. Configuring IPA Client...
     command: authconfig --update --enablesssd --enablesssdauth --enablemkhomedir
-#  - name: Environment Packages Installed. Configuring IPA client
-#    command: yum install -y ipa-client man-pages
-#    tags: repo
-#    async: 500
-#    poll: 0
-#    register: yum_sleeper
-#  - name: Finishing Environment Package Installation Before IPA Client Configuration
-#    async_status: jid={{ yum_sleeper.ansible_job_id }}
-#    register: job_result
-#    until: job_result.finished
-#    retries: 40  
-  - name: Erasing Repos
-    shell: rm -rf /etc/yum.repos.d/*
   - name: IPA client Configured
     command: ipa-client-install --enable-dns-updates --force-join --mkhomedir -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
     ignore_errors: yes
@@ -91,9 +81,6 @@
     register: job_result
     until: job_result.finished
     retries: 40
-#  - name: Rebooting machine
-#    reboot:
-#      reboot_timeout: 60
   - name: Welcome to the RHCSA 7 Study/Test Environment!
     debug:
       msg:

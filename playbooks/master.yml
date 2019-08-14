@@ -1,0 +1,5 @@
+---
+- import_playbook: ipa.yml
+- import_playbook: repo.yml
+- import_playbook: system.yml
+...
