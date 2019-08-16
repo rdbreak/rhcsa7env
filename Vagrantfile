@@ -29,7 +29,7 @@ config.vm.define "system1" do |system1|
   system1.vm.network "private_network", ip: "192.168.55.102"
   system1.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
   system1.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y sshpass httpd vsftpd createrepo pki-ca", run: "always"
-  system1.vm.provision :shell, :inline => "sudo yum install -y httpd sshpass", run: "always"
+  system1.vm.provision :shell, :inline => "sudo yum install -y httpd sshpass bash-completion", run: "always"
   system1.vm.provision :shell, :inline => "sudo yum install -y python-devel curl ;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
   system1.vm.provision :shell, :inline => "pip install ansible", run: "always"
   system1.vm.provision :shell, :inline => "sudo yum group install -y \"Development Tools\" ; echo \'vagrant\' | sudo passwd vagrant --stdin", run: "always"
