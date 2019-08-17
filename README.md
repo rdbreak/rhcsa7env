@@ -21,9 +21,11 @@ systemctl stop packagekit; yum install -y epel-release && yum install -y git bin
 - [Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 
 ## Debian
-- Vagrant - `sudo apt install vagrant`
-- Vagrant Plugin - `vagrant plugin install vagrant-guest_ansible`
-- [Latest Version of Virtualbox and Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
+- Install Ruby/Bundler/Git - `sudo snap install ruby ; sudo apt install ruby-bundler git -y`
+- Vagrant - `wget -c https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.deb ; sudo dpkg -i vagrant_2.2.5_x86_64.deb`
+- Vagrant Plugin - `vagrant plugin install vagrant-guest-ansible`
+- Virtualbox ````wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add - ; wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add - ; sudo add-apt-repository "deb http://download.virtualbox.org/virtualbox/debian bionic contrib"; sudo apt update; sudo apt install -y virtualbox-6.0``` 
+- Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 
 ## Windows 
 - [Latest Version of Vagrant](https://www.vagrantup.com/downloads.html)
@@ -41,8 +43,8 @@ _Now you should be ready to follow the next steps and get the deployment up and 
 ## Once the above software is installed. Do the following if you're running the environment on Windows:
 1. Create a separate `~/bin` directory and `cd` to it.  (The directory doesn't have to be ~/bin, it can be anything you want.)
 2. Use your browser of choice and navigate to https://github.com/rdbreak/rhcsa7env, press the green “Clone or download” button then the “Download ZIP” button.
-3. Once downloaded, unzip the file and move it to the directory you created earlier.
-3. Open CMD prompt and cd to the repo directory then run `vagrant up` to deploy the environment
+3. Once downloaded, unzip the file and move it to the directory you created earlier, `~/bin` in the above example.
+3. Open CMD prompt and cd to the `~/bin/rhcsa7env` directory then run `vagrant up` to deploy the environment
 
 **Also, don't be spooked by any scary red font during the setup process. There are known issues that won't have a negative affect on the environment.**
 
