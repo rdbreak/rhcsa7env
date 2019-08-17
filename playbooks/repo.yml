@@ -4,6 +4,8 @@
   become: true
   gather_facts: false
   tasks:
+  - name: Setting Hostname
+    command: hostnamectl set-hostname repo.example.com
   - name: Configuring network
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.4/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.method manual
   - name: Fixing hosts file

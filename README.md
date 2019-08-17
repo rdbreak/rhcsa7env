@@ -10,7 +10,7 @@ _Gatekeeper will block virtualbox from installing. All you have to do is go to S
 ###### Install at once with the command below (Mac only): 
 `brew install ansible ; brew install python ; brew cask install vagrant ; brew cask install VirtualBox ; brew cask install virtualbox-extension-pack`
 
-###### CentOS/RHEL
+###### CentOS/RHEL 7
 - Install these packages (EPEL required) `yum install binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms libvirt libvirt-devel ruby-devel libxslt-devel libxml2-devel libguestfs-tools-c`
 - Vagrant - `mkdir ~/Vagrant ; cd ~/Vagrant ; curl -o  vagrant_2.2.5_x86_64.rpm https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.rpm; yum install -y vagrant_2.2.5_x86_64.rpm` on the command line.
 - Ansible Guest Vagrant Plugin `vagrant plugin install vagrant-guest_ansible` and `vagrant plugin install vagrant-libvirt`
