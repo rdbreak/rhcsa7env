@@ -1,26 +1,33 @@
-# RHCSA 7 Study/Test Environment powered by Ansible and Vagrant. 
+# RHCSA 7 Automated Practice Deployment
+_Powered by Ansible and Vagrant_ 
 
-## Install the following software before setting up:
-###### macOS
+## Installation options below:
+## macOS
 _Gatekeeper will block virtualbox from installing. All you have to do is go to Security & Privacy of System Preferences and click Allow under the General tab and rerun installation._
+##### Install all at once with the command below:
+`brew install ansible ; brew install python ; brew cask install vagrant ; brew cask install VirtualBox ; brew cask install virtualbox-extension-pack`
+##### Alternatively, you can install everything individually below.
 - [Latest Version of Vagrant](https://www.vagrantup.com/downloads.html) - (`brew cask install vagrant`)
     - Vagrant Plugin - `vagrant plugin install vagrant-guest_ansible`
 - [Latest Version of Virtualbox](https://www.virtualbox.org/wiki/Downloads) (`brew cask install VirtualBox`)
 - Virtual Box Extension Pack (`brew cask install virtualbox-extension-pack`)
-###### Install at once with the command below (Mac only): 
-`brew install ansible ; brew install python ; brew cask install vagrant ; brew cask install VirtualBox ; brew cask install virtualbox-extension-pack`
 
-###### CentOS/RHEL 7
-- Install these packages (EPEL required) `yum install binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms libvirt libvirt-devel ruby-devel libxslt-devel libxml2-devel libguestfs-tools-c`
-- Vagrant - `mkdir ~/Vagrant ; cd ~/Vagrant ; curl -o  vagrant_2.2.5_x86_64.rpm https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.rpm; yum install -y vagrant_2.2.5_x86_64.rpm` on the command line.
-- Ansible Guest Vagrant Plugin `vagrant plugin install vagrant-guest_ansible` and `vagrant plugin install vagrant-libvirt`
-- VirtualBox - `wget -O /etc/yum.repos.d/virtualbox.repo wget http://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo ; yum install -y VirtualBox-6.0`
+## CentOS/RHEL 7 - Install all at once by Copy/Pasting the below command into your terminal as root.
+_NOTE - If it's been awhile since you've run yum update, do that first. Reboot if the kernel was updated._
+```
+systemctl stop packagekit; yum install -y epel-release && yum install -y git binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms libvirt libvirt-devel ruby-devel libxslt-devel libxml2-devel libguestfs-tools-c ; mkdir ~/Vagrant ; cd ~/Vagrant ; curl -o  vagrant_2.2.5_x86_64.rpm https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.rpm && yum install -y vagrant_2.2.5_x86_64.rpm && vagrant plugin install vagrant-guest_ansible ; vagrant plugin install vagrant-libvirt ; wget -O /etc/yum.repos.d/virtualbox.repo wget http://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo ; yum install -y VirtualBox-6.0 && systemctl start packagekit
+```
+##### Also, install the Virtualbox extension pack below
 - [Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
-###### Install all at once with the command below (RHEL/CentOS 7 only)
-_Make sure to install Virtual Box Extension Pack as well._`systemctl stop packagekit; yum install -y epel-release && yum install -y git binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms libvirt libvirt-devel ruby-devel libxslt-devel libxml2-devel libguestfs-tools-c ; mkdir ~/Vagrant ; cd ~/Vagrant ; curl -o  vagrant_2.2.5_x86_64.rpm https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.rpm && yum install -y vagrant_2.2.5_x86_64.rpm && vagrant plugin install vagrant-guest_ansible ; vagrant plugin install vagrant-libvirt ; wget -O /etc/yum.repos.d/virtualbox.repo wget http://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo ; yum install -y VirtualBox-6.0 && systemctl start packagekit`
-###### Debian
+
+## Debian
 - Vagrant - `sudo apt install vagrant`
 - Vagrant Plugin - `vagrant plugin install vagrant-guest_ansible`
+- [Latest Version of Virtualbox and Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
+
+## Windows 
+- [Latest Version of Vagrant](https://www.vagrantup.com/downloads.html)
+    - Vagrant Plugin - `vagrant plugin install vagrant-guest_ansible`
 - [Latest Version of Virtualbox and Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 
 _Now you should be ready to follow the next steps and get the deployment up and running!_
@@ -37,7 +44,7 @@ _Now you should be ready to follow the next steps and get the deployment up and 
 3. Once downloaded, unzip the file and move it to the directory you created earlier.
 3. Open CMD prompt and cd to the repo directory then run `vagrant up` to deploy the environment
 
-*Also, don't be spooked by any scary red font during the setup process. There are known issues that won't have a negative affect on the environment.* 
+**Also, don't be spooked by any scary red font during the setup process. There are known issues that won't have a negative affect on the environment.**
 
 _NOTE - You can also use the VirtualBox console to interact with the VMs or through a terminal. If you need to reset the root password, you would need to use the console._
 
@@ -50,29 +57,35 @@ _NOTE this requires a free Github account_
 ## Other Useful Information:
 I'm constantly making upgrades to the environments, so every once and awhile run `git pull` in the repo directory to pull down changes. The first time you run the vagrant up command, it will download the OS images for later use. In other words, it will take longest the first time around but will be faster when it is deployed again. You can run `vagrant destroy -f` to destroy your environment at anytime. **This will erase everything**. This environment is meant to be reuseable, If you run the `vagrant up` command after destroying the environment, the OS image will already be downloaded and environment will deploy faster. Once the setup is complete, the ipa server and client for realm EXAMPLE.COM will already be setup and paired. Deployment should take around 15 minutes depending on your computer. You shouldn't need to access the IPA server or Repo server during your practice exams. Everything should be provided that you would normally need during an actual exam. Hope this helps in your studies!
 
-### Included systems:
+## Included systems:
 - ipa.example.com
 - repo.example.com
 - system1.example.com
 
-### System Details:
-###### repo
-192.168.55.4
-###### ipa
-192.168.55.5
-###### system1
-192.168.55.6
+## System Details:
+> repo
+- IP - 192.168.55.4
+- Gateway - 192.168.55.1
+- DNS - 192.168.55.5
+> ipa
+- 192.168.55.5
+- Gateway - 192.168.55.1
+- DNS - 192.168.55.5
+> system1
+- 192.168.55.6
+- Gateway - 192.168.55.1
+- DNS - 192.168.55.5
 
 There is a repo available to use from `http://repo.example.com/rpms`
 
-### Accessing the systems
+## Accessing the systems
 Remember to add the IP addresses to your local host file if you want to connect to the guest systems with the hostname.
 Username - vagrant
 Password - vagrant
 - For root - use `sudo` or `sudo su`
 Access example - `ssh vagrant@192.168.55.5` or `vagrant ssh system`
 
-### LDAP users
+## LDAP users
 - Username = dave, lisa
 - Password = password
 
