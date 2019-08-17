@@ -52,10 +52,10 @@ config.vm.define "ipa" do |ipa|
   ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
   ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y sshpass httpd vsftpd createrepo pki-ca", run: "always"
   ipa.vm.provision :shell, :inline => "sudo yum install -y httpd sshpass", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum install -y python-devel curl ;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
+  ipa.vm.provision :shell, :inline => "sudo yum install -y python-devel curl rsync;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
   ipa.vm.provision :shell, :inline => "pip install ansible", run: "always"
   ipa.vm.provision :shell, :inline => "sudo yum group install -y \"Development Tools\"", run: "always"
-  ipa.vm.synced_folder ".", "/vagrant"
+#  ipa.vm.synced_folder ".", "/vagrant"
 #  ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
   ipa.vm.provider :virtualbox do |ipa|
