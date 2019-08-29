@@ -1,0 +1,16 @@
+---
+- hosts: system1
+  strategy: free
+  gather_facts: False
+  tasks:
+  - name: Welcome to the RHCSA 7 Study/Test Environment!
+    debug:
+      msg:
+        - 'System 1 is currently rebooting, give it a couple seconds before accessing'
+        - 'Accessing The Systems:'
+        - '- IPA - 192.168.55.5'
+        - '- System 1 - 192.168.55.6'
+        - '- Username - vagrant'
+        - '- Password - vagrant'
+        - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system1`'
+        - '- Happy Studying!'
