@@ -8,28 +8,6 @@
     command: hostnamectl set-hostname system1.example.com
   - name: Fixing Resolv File
     command: echo 'nameserver 192.168.55.5' > /etc/resolv.conf
-  - name: Creating Temporary Repo File
-    file:
-      path: /etc/yum.repos.d/ipa.repo
-      state: touch
-      mode: 0755
-  - name: Creating Temporary Repo File
-    file:
-      path: /etc/yum.repos.d/ipa.repo
-      state: touch
-      mode: 0755
-  - name: Building Repo File
-    blockinfile:
-      dest: /etc/yum.repos.d/ipa.repo
-      block: |
-       [ipa]
-       name=ipa repo
-       baseurl=http://reflector.westga.edu/repos/CentOS/7/os/x86_64/
-       gpgcheck=1
-       gpgkey=http://reflector.westga.edu/repos/CentOS/7/os/x86_64/RPM-GPG-KEY-CentOS-7
-       enabled=1
-  - name: Installing Packages
-    shell: yum install -y ipa-client
   - name: Erasing Repos
     shell: yum clean all ; rm -rf /etc/yum.repos.d/*
     ignore_errors: true
