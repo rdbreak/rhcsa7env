@@ -36,11 +36,26 @@
       path: /etc/hosts
       line: 192.168.55.4 repo.example.com repo
       create: yes
+  - name: Creating Temporary Repo File
+    file:
+      path: /etc/yum.repos.d/rpms.repo
+      state: touch
+      mode: 0755
+  - name: Building Repo File
+    blockinfile:
+      dest: /etc/yum.repos.d/rpms.repo
+      block: |
+       [rpms]
+       name=rpms
+       baseurl=http://repo/rpms
+       gpgcheck=0
+       enabled=1
   - name: Packages Installed.
     yum:
       name:
         - ipa-server
         - ipa-server-dns
+        - chrony
   - name: Configuring network
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
   - name: Enabling services
@@ -48,6 +63,7 @@
     with_items:
       - httpd
       - firewalld
+      - chronyd
   - name: Starting Firewalld
     service: name=firewalld state=started
   - name: Enabling Firewall Services
