@@ -65,6 +65,20 @@
       path: /etc/profile.d/welcome.sh
       state: touch
       mode: 0755
+  - name: Welcome to the RHCSA 7 Study/Test Environment!
+    debug:
+      msg:
+        - 'Accessing The Systems:'
+        - '- IPA - 192.168.55.5'
+        - '- System 1 - 192.168.55.6'
+        - '- Username - vagrant'
+        - '- Password - vagrant'
+        - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system1`'
+        - ' ---------------------------------------------------------------------'
+        - '- Repo is available to use from http://repo.example.com/rpms'
+        - '- Happy Studying!'
+        - '- System 1 is currently rebooting, it should reach login in ~20 seconds'
+
   - name: Building Welcome Message
     blockinfile:
       path: /etc/profile.d/welcome.sh

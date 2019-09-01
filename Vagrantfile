@@ -14,6 +14,29 @@ config.vm.define "repo" do |repo|
   end
 end
 
+config.vm.define "ipa" do |ipa|
+  ipa.vm.box = "centos/7"
+  ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
+  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y sshpass httpd vsftpd createrepo pki-ca", run: "always"
+  ipa.vm.provision :shell, :inline => "sudo yum install -y python-devel curl ;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
+  ipa.vm.provision :shell, :inline => "pip install ansible", run: "always"
+  ipa.vm.provision :shell, :inline => "echo \'vagrant\' | sudo passwd vagrant --stdin", run: "always"
+  ipa.vm.provision :shell, :inline => "sudo yum group install -y \"Development Tools\"", run: "always"
+#  ipa.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
+#  ipa.vm.hostname = "ipa.example.com"
+  ipa.vm.network "private_network", ip: "192.168.55.5"
+  ipa.vm.provider :virtualbox do |ipa|
+    ipa.customize ['modifyvm', :id,'--memory', '2048']
+    end
+    ipa.vm.provision :ansible_local do |ansible|
+      ansible.playbook = "/vagrant/playbooks/master.yml"
+      ansible.install = false
+      ansible.compatibility_mode = "2.0"
+      ansible.inventory_path = "/vagrant/inventory"
+      ansible.config_file = "/vagrant/ansible.cfg"
+      ansible.limit = "all"
+     end
+end
 config.vm.define "system1" do |system1|
   system1.vm.box = "rdbreak/pracenvs"
 #  system1.vm.hostname = "system1.example.com"
@@ -46,28 +69,5 @@ config.vm.define "system1" do |system1|
       ansible.limit = "all"
      end
     system1.vm.provision :shell, :inline => "reboot", run: "always"
-end
-config.vm.define "ipa" do |ipa|
-  ipa.vm.box = "centos/7"
-  ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y sshpass httpd vsftpd createrepo pki-ca", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum install -y python-devel curl ;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
-  ipa.vm.provision :shell, :inline => "pip install ansible", run: "always"
-  ipa.vm.provision :shell, :inline => "echo \'vagrant\' | sudo passwd vagrant --stdin", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum group install -y \"Development Tools\"", run: "always"
-#  ipa.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
-#  ipa.vm.hostname = "ipa.example.com"
-  ipa.vm.network "private_network", ip: "192.168.55.5"
-  ipa.vm.provider :virtualbox do |ipa|
-    ipa.customize ['modifyvm', :id,'--memory', '2048']
-    end
-    ipa.vm.provision :ansible_local do |ansible|
-      ansible.playbook = "/vagrant/playbooks/master.yml"
-      ansible.install = false
-      ansible.compatibility_mode = "2.0"
-      ansible.inventory_path = "/vagrant/inventory"
-      ansible.config_file = "/vagrant/ansible.cfg"
-      ansible.limit = "all"
-     end
 end
 end
