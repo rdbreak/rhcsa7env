@@ -13,7 +13,8 @@
     ignore_errors: true
   - name: Disabling services
     selinux:
-      state: disabled
+      state: permissive
+      policy: targeted
     ignore_errors: yes
   - name: Fixing hosts file
     lineinfile:

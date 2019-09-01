@@ -61,7 +61,7 @@ _Now the deployment should be up and running!_
 _NOTE this requires a free Github account_
 1. Navigate to https://desktop.github.com/ and download Github Desktop.
 2. Create or sign in to your account.
-3. Clone or pull changes to respctive repo
+3. Clone or pull changes to  repo
 
 ## Other Useful Information:
 You can also use the VirtualBox console to interact with the VMs or through a terminal. If you need to reset the root password, you would need to use the console. I'm constantly making upgrades to the environments, so every once and awhile run `git pull` in the repo directory to pull down changes. The first time you run the vagrant up command, it will download the OS images for later use. In other words, it will take longest the first time around but will be faster when it is deployed again. You can run `vagrant destroy -f` to destroy your environment at anytime. **This will erase everything**. This environment is meant to be reuseable, If you run the `vagrant up` command after destroying the environment, the OS image will already be downloaded and environment will deploy faster. Once the setup is complete, the ipa server and client for realm EXAMPLE.COM will already be setup and paired. Deployment should take around 15 minutes depending on your computer. You shouldn't need to access the IPA or REPO server during your practice exams. Everything should be provided that you would normally need during an actual exam. Hope this helps in your studies!

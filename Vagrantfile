@@ -32,8 +32,20 @@ config.vm.define "system1" do |system1|
   end
   
     system1.vm.provision "shell", inline: <<-SHELL
-    yes|  mkfs.ext4 /dev/sdb
+    yes|  mkfs.ext4 -L extradisk /dev/sdb
     SHELL
+    system1.vm.provision "shell", inline: <<-SHELL
+    mkdir /extradisk ; echo \'LABEL=extradisk /extradisk ext4 defaults 0 0\' >> /etc/fstab
+    SHELL
+    system1.vm.provision :ansible_local do |ansible|
+      ansible.playbook = "/vagrant/playbooks/system.yml"
+      ansible.install = false
+      ansible.compatibility_mode = "2.0"
+      ansible.inventory_path = "/vagrant/inventory"
+      ansible.config_file = "/vagrant/ansible.cfg"
+      ansible.limit = "all"
+     end
+    system1.vm.provision :shell, :inline => "reboot", run: "always"
 end
 config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
