@@ -5,6 +5,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 # Use same SSH key for each machine
 config.ssh.insert_key = false
 config.vm.box_check_update = false
+
 config.vm.define "repo" do |repo|
   repo.vm.box = "rdbreak/pracrepo"
 #  repo.vm.hostname = "repo.example.com"
@@ -17,12 +18,9 @@ end
 config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
   ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y sshpass httpd vsftpd createrepo pki-ca", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum install -y python-devel curl ;sudo curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py ; python get-pip.py ; sudo pip install -U pip ; sudo pip install pexpect;", run: "always"
-  ipa.vm.provision :shell, :inline => "pip install ansible", run: "always"
+  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y sshpass python36-pip python36-devel httpd sshpass vsftpd createrepo pki-ca", run: "always"
+  ipa.vm.provision :shell, :inline => "alternatives --set python /usr/bin/python36 ; python36 -m pip install -U pip ; python36 -m pip install pexpect; python36 -m pip install ansible", run: "always"
   ipa.vm.provision :shell, :inline => "echo \'vagrant\' | sudo passwd vagrant --stdin", run: "always"
-  ipa.vm.provision :shell, :inline => "sudo yum group install -y \"Development Tools\"", run: "always"
-#  ipa.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
 #  ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
   ipa.vm.provider :virtualbox do |ipa|
