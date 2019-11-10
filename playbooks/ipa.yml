@@ -112,6 +112,8 @@
   - name: Setting SELinux To Permissive
     shell: setenforce 0
     ignore_errors: yes
+  - name: Copying CA CERT
+    command: cp /etc/ipa/ca.crt /var/www/html/ca.crt
   - name: Creating Welcome Message
     file:
       path: /etc/profile.d/welcome.sh

@@ -105,6 +105,8 @@
          #
          # For root - use \`sudo\` or \`sudo su -\`
          # Repo is available to use from http://repo.example.com/rpms
+         # CA certificate is provided on http://ipa.example.com/ca.crt
+         #
          # EXAMPLE.com realm has been configured already, there are also two additional NICs
          # for troubleshooting purposes.
          # 
