@@ -75,7 +75,6 @@
         - '- Password - vagrant'
         - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system1`'
         - ' ---------------------------------------------------------------------'
-        - '- Repo is available to use from http://repo.example.com/rpms'
         - '- Happy Studying!'
         - '- System 1 is currently rebooting, it should reach login in ~30 seconds'
 
