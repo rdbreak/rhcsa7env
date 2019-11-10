@@ -10,9 +10,9 @@ _Gatekeeper will block virtualbox from installing. All you have to do is go into
 ```
 
 ##### Alternatively, you can install everything individually below.
-- [Latest Version of Vagrant](https://www.vagrantup.com/downloads.html) - (`brew cask install vagrant`)
+- [Install the Latest Version of Vagrant](https://www.vagrantup.com/downloads.html) - (`brew cask install vagrant`)
     - Vagrant Plugin - `vagrant plugin install vagrant-guest_ansible`
-- [Latest Version of Virtualbox](https://www.virtualbox.org/wiki/Downloads) (`brew cask install VirtualBox`)
+- [Install the Latest Version of Virtualbox](https://www.virtualbox.org/wiki/Downloads) (`brew cask install VirtualBox`)
     - Virtual Box Extension Pack (`brew cask install virtualbox-extension-pack`)
 
 ##### Once the above software is installed. Do the following if you're running the environment on Mac:
@@ -27,7 +27,7 @@ _NOTE - If it's been awhile since you've run yum update, do that first. Reboot i
 systemctl stop packagekit; yum install -y epel-release && yum install -y git binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms libvirt libvirt-devel ruby-devel libxslt-devel libxml2-devel libguestfs-tools-c ; mkdir ~/Vagrant ; cd ~/Vagrant ; curl -o  vagrant_2.2.6_x86_64.rpm https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.6_x86_64.rpm && yum install -y vagrant_2.2.6_x86_64.rpm && vagrant plugin install vagrant-guest_ansible ; vagrant plugin install vagrant-guest-ansible ; wget -O /etc/yum.repos.d/virtualbox.repo wget http://download.virtualbox.org/virtualbox/rpm/rhel/virtualbox.repo ; yum install -y VirtualBox-6.0 && systemctl start packagekit
 ```
 ##### Also, install the Virtualbox extension pack below
-- [Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
+- [Install the Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
 
 ## Windows/RHEL 8/Fedora 30
 - [Install the Latest Version of Vagrant](https://www.vagrantup.com/downloads.html)
