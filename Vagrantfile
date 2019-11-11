@@ -9,7 +9,7 @@ config.vm.box_check_update = false
 config.vm.define "repo" do |repo|
   repo.vm.box = "rdbreak/pracrepo"
 #  repo.vm.hostname = "repo.example.com"
-  repo.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
+#  repo.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
   repo.vm.network "private_network", ip: "192.168.55.4"
 
   repo.vm.provider "virtualbox" do |repo|
