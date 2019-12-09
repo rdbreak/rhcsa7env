@@ -20,7 +20,7 @@ end
 config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
   ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y sshpass python3-pip python3-devel httpd sshpass vsftpd createrepo pki-ca", run: "always"
+  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y nss sshpass python3-pip python3-devel httpd sshpass vsftpd createrepo pki-ca", run: "always"
   ipa.vm.provision :shell, :inline => "alternatives --set python /usr/bin/python3 ; python3 -m pip install -U pip ; python3 -m pip install pexpect; python3 -m pip install ansible", run: "always"
   ipa.vm.provision :shell, :inline => "echo \'vagrant\' | sudo passwd vagrant --stdin", run: "always"
   ipa.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
