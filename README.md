@@ -32,7 +32,8 @@ systemctl stop packagekit; yum install -y epel-release ; yum install -y git binu
 ## Windows/RHEL 8/Fedora 30
 - [Install the Latest Version of Vagrant](https://www.vagrantup.com/downloads.html)
 - [Install the Latest Version of Virtualbox and Virtual Box Extension Pack](https://www.virtualbox.org/wiki/Downloads)
-- Then Install the Following Dependencies:
+- If on Windows, install the following vagrant plugin via PowerShell as Administrator `vagrant plugin install vagrant-guest_ansible` 
+- If on Linux, install the remaining dependencies:
 ```
 vagrant plugin install vagrant-guest_ansible ; sudo dnf install -y git binutils gcc make patch libgomp glibc-headers glibc-devel kernel-headers kernel-devel dkms libvirt libvirt-devel ruby-devel libxslt-devel libxml2-devel 
 ```
