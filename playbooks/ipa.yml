@@ -1,56 +1,31 @@
 ---
-- hosts: ipa
+- name: Setting Up IPA Server
+  hosts: ipa
   strategy: free
-  gather_facts: true
-  become: true
+  ignore_errors: true
   tasks:
   - name: Setting Hostname
-    command: hostnamectl set-hostname ipa.example.com
-  - name: Fixing hosts file
+    hostname: name=ipa.example.com
+  - name: Adjusting sftp
     lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^Subsystem'
+      line: 'Subsystem sftp internal-sftp'
+  - name: Building Host File
+    copy:
       dest: /etc/hosts
-      regexp: '^127\.0\.0\.1'
-      state: absent
-  - name: Adding localhost IPV4 address to host file
-    lineinfile:
-      path: /etc/hosts
-      line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-      create: yes
-  - name: Adding localhost IPV6 address to host file
-    lineinfile:
-      path: /etc/hosts
-      line: ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
-      create: yes
-  - name: Adding IPA address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.5 ipa.example.com ipa
-      create: yes
-  - name: Adding system1 address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.6 system1.example.com system1
-      create: yes
-  - name: Adding repo address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.4 repo.example.com repo
-      create: yes
+      content: "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n:1         localhost localhost.localdomain localhost6 localhost6.localdomain6\n192.168.55.4 repo.example.com repo\n192.168.55.5 ipa.example.com ipa\n192.168.55.6 system1.example.com system1"
+      force: yes
   - name: Creating Temporary Repo File
     file:
       path: /etc/yum.repos.d/rpms.repo
       state: touch
       mode: 0755
-  - name: Building Repo File
-    blockinfile:
+  - name: Building Repo File. Installing Packages...
+    copy:
       dest: /etc/yum.repos.d/rpms.repo
-      block: |
-       [rpms]
-       name=rpms
-       baseurl=http://repo/rpms
-       gpgcheck=0
-       enabled=1
-  - name: Packages Installed.
+      content: "[rpms]\nname=rpms\nbaseurl=http://repo/rpms\ngpgcheck=0\nenabled=1"
+  - name: Packages Installed
     yum:
       name:
         - ipa-server
@@ -58,25 +33,46 @@
         - chrony
   - name: Configuring network
     shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
-  - name: Enabling services
-    service: name={{item}} enabled=true
+  - name: Restarted Network
+    service: name=NetworkManager state=restarted
+  - name: Starting services
+    service: name=firewalld state=started enabled=yes
+  - name: Enabling Firewall Services. Configuring IPA server...(Est. Time - 7 minutes)
+    firewalld:
+      service: "{{ item }}"
+      immediate: yes
+      permanent: yes
+      state: enabled
     with_items:
-      - httpd
-      - firewalld
-      - chronyd
-  - name: Starting Firewalld
-    service: name=firewalld state=started
-  - name: Enabling Firewall Services
-    command: firewall-cmd --permanent --add-service=http --add-service=https --add-service=ntp --add-service=dns --add-service=kerberos --add-service=ldap --add-service=ldaps --add-service=ftp
-  - name: Reloaded Firewall. Configuring IPA server...(Est. Time - 7 minutes)
-    command: firewall-cmd --reload
+      - http
+      - https
+      - ntp
+      - dns
+      - kerberos
+      - ldap
+      - ldaps
+      - ftp
   - name: Finishing IPA server Configuration
     command: ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+  - name: Starting services
+    service: name={{item}} enabled=true state=started
+    with_items:
+      - httpd
+      - chronyd
+  - name: Authenticating KRB5 Database
+    expect:
+      command: kinit admin
+      responses:
+        (.*)Password for admin@EXAMPLE.COM(.*): "password"
+    tags: krb
+  - name: Setting IPA user home directory location
+    command: ipa config-mod --homedirectory /home/ldap
+    tags: krb
   - name: Adding IPA user 'dave'
     ipa_user:
         name: dave
         state: present
-        krbpasswordexpiration: 20200119235959
+        krbpasswordexpiration: "20200119235959"
         givenname: dave
         sn: dave
         mail:
@@ -85,17 +81,16 @@
         - '+555123456'
         sshpubkey:
         password: password
-        uidnumber: 1001
-        gidnumber: 1000
+        uidnumber: "1001"
+        gidnumber: "1000"
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password
-    
   - name: Adding IPA user 'lisa'
     ipa_user:
         name: lisa
         state: present
-        krbpasswordexpiration: 20200119235959
+        krbpasswordexpiration: "20200119235959"
         givenname: lisa
         sn: lisa
         mail:
@@ -104,16 +99,16 @@
         - '+555123456'
         sshpubkey:
         password: password
-        uidnumber: 1002
-        gidnumber: 1001
+        uidnumber: "1002"
+        gidnumber: "1001"
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password   
-  - name: Setting SELinux To Permissive
-    shell: setenforce 0
-    ignore_errors: yes
   - name: Copying CA CERT
-    command: cp /etc/ipa/ca.crt /var/www/html/ca.crt
+    copy:
+      src: /etc/ipa/ca.crt
+      dest: /var/www/html/ca.crt
+      remote_src: yes
   - name: Creating Welcome Message
     file:
       path: /etc/profile.d/welcome.sh
@@ -141,8 +136,12 @@
          # Why are you here? You should be working on the system hosts...
          # Anyway, try not to reboot me or bad stuff can happen.
          #
-         # You are logged into \"`hostname`\" as user \"`whoami`\"
+         # You are logged into \"`hostname`\" as the \"`whoami`\" account.
          # This system is running `cat /etc/redhat-release`
-         # kernel is `uname -r`
          "
+  - name: Disabling Services then rebooting
+    selinux:
+      state: disabled
+  - name: Rebooted host
+    reboot:
 ...

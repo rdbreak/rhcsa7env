@@ -6,6 +6,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 config.ssh.insert_key = false
 config.vm.box_check_update = false
 
+# Repo Server
 config.vm.define "repo" do |repo|
   repo.vm.box = "rdbreak/pracrepo"
 #  repo.vm.hostname = "repo.example.com"
@@ -17,13 +18,13 @@ config.vm.define "repo" do |repo|
   end
 end
 
+# IPA Server
 config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
   ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
-  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y nss sshpass python3-pip python3-devel httpd sshpass vsftpd createrepo pki-ca", run: "always"
-  ipa.vm.provision :shell, :inline => "alternatives --set python /usr/bin/python3 ; python3 -m pip install -U pip ; python3 -m pip install pexpect; python3 -m pip install ansible", run: "always"
+  ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y nss sshpass libselinux-python python-pip python-devel httpd sshpass vsftpd createrepo pki-ca", run: "always"
+  ipa.vm.provision :shell, :inline => "python -m pip install -U pip ; python -m pip install pexpect; python -m pip install ansible", run: "always"
   ipa.vm.provision :shell, :inline => "echo \'vagrant\' | sudo passwd vagrant --stdin", run: "always"
-  ipa.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
 #  ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
   ipa.vm.provider :virtualbox do |ipa|
@@ -38,6 +39,8 @@ config.vm.define "ipa" do |ipa|
       ansible.limit = "all"
      end
 end
+
+#System 1
 config.vm.define "system1" do |system1|
   system1.vm.box = "rdbreak/pracenvs"
 #  system1.vm.hostname = "system1.example.com"
@@ -56,7 +59,7 @@ config.vm.define "system1" do |system1|
     system1.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 2]
     system1.customize ['storageattach', :id,  '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk1]
   end
-  
+
     system1.vm.provision "shell", inline: <<-SHELL
     yes|  mkfs.ext4 -L extradisk /dev/sdb
     SHELL
@@ -71,6 +74,5 @@ config.vm.define "system1" do |system1|
       ansible.config_file = "/vagrant/ansible.cfg"
       ansible.limit = "all"
      end
-    system1.vm.provision :shell, :inline => "reboot", run: "always"
-end
+     end
 end

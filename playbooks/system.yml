@@ -1,61 +1,41 @@
 ---
-- hosts: system1
+- name: Setting Up System 1
+  hosts: system1
   strategy: free
-  become: true
   gather_facts: False
+  ignore_errors: yes
   tasks:
   - name: Setting Hostname
-    command: hostnamectl set-hostname system1.example.com
+    hostname: name=system1.example.com
+  - name: Adjusting sftp
+    lineinfile:
+      path: /etc/ssh/sshd_config
+      regexp: '^Subsystem'
+      line: Subsystem sftp internal-sftp
   - name: Fixing Resolv File
     command: echo 'nameserver 192.168.55.5' > /etc/resolv.conf
   - name: Erasing Repos
     shell: yum clean all ; rm -rf /etc/yum.repos.d/*
-    ignore_errors: true
-  - name: Disabling services
-    selinux:
-      state: permissive
-      policy: targeted
-    ignore_errors: yes
-  - name: Fixing hosts file
-    lineinfile:
+  - name: Building Host File
+    copy:
       dest: /etc/hosts
-      regexp: '^127\.0\.0\.1'
-      state: absent
-  - name: Rebuilding host file
-    lineinfile:
-      path: /etc/hosts
-      line: 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
-      create: yes
-  - name: Adding IPA address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.5 ipa.example.com ipa
-      create: yes
-  - name: Adding system IP address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.6 system1.example.com system1
-      create: yes
-  - name: Adding Repo IP address to hosts file
-    lineinfile:
-      path: /etc/hosts
-      line: 192.168.55.4 repo.example.com repo
-      create: yes
+      content: "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n:1         localhost localhost.localdomainlocalhost6localhost6.localdomain6\n192.168.55.4 repo.example.com repo\n192.168.55.5 ipa.example.com ipa\n192.168.55.6 system1.example.com system1"
+      force: yes
   - name: Configuring network
     command: nmcli con mod "System enp0s8" ipv4.addresses "192.168.55.6/24 192.168.55.1" ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
+  - name: Restarting Network
+    service: name=NetworkManager state=restarted
   - name: Enabling Authconfig. Configuring IPA Client...
     command: authconfig --update --enablesssd --enablesssdauth --enablemkhomedir
   - name: IPA client Configured
     command: ipa-client-install --enable-dns-updates --force-join --mkhomedir -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
     ignore_errors: yes
-    async: 500
+    async: 700
     poll: 0
     register: ipa_sleeper
-  - name: Enabling services
-    service: name=firewalld enabled=true
-  - name: Starting services
-    service: name=firewalld state=started
-  - name: Finishing IPA client configuration
+  - name: Starting services. Finishing IPA client configuration...
+    service: name=firewalld state=started enabled=yes
+  - name: Finished IPA client configuration
     async_status: jid={{ ipa_sleeper.ansible_job_id }}
     register: job_result
     until: job_result.finished
@@ -65,19 +45,6 @@
       path: /etc/profile.d/welcome.sh
       state: touch
       mode: 0755
-  - name: Welcome to the RHCSA 7 Study/Test Environment!
-    debug:
-      msg:
-        - 'Accessing The Systems:'
-        - '- IPA - 192.168.55.5'
-        - '- System 1 - 192.168.55.6'
-        - '- Username - vagrant'
-        - '- Password - vagrant'
-        - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system1`'
-        - ' ---------------------------------------------------------------------'
-        - '- Happy Studying!'
-        - '- System 1 is currently rebooting, it should reach login in ~30 seconds'
-
   - name: Building Welcome Message
     blockinfile:
       path: /etc/profile.d/welcome.sh
@@ -98,9 +65,8 @@
          #   \_____\/            \/_/\_____\/  \_\/      \/__________/       \/_/           \_________\/ 
          '"#
          # Welcome!
-         # You are logged into \"`hostname`\" as user \"`whoami`\"
+         # You are logged into \"`hostname`\" as the \"`whoami`\" account.
          # This system is running `cat /etc/redhat-release`
-         # kernel is `uname -r`
          #
          # For root - use \`sudo\` or \`sudo su -\`
          # Repo is available to use from http://repo.example.com/rpms
@@ -113,4 +79,22 @@
          # Usernames = dave, lisa
          # Passwords = password
          "
-...
+  - name: Disabling Services and Rebooting Server 1
+    selinux:
+      state: disabled
+  - name: Welcome to the RHCSA 7 Study/Test Environment!
+    debug:
+      msg:
+        - 'Accessing The Systems:'
+        - '- IPA Server - 192.168.55.5'
+        - '- System 1 - 192.168.55.6'
+        - '- Username - vagrant'
+        - '- Password - vagrant'
+        - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system1`'
+        - '----------------------------------------------------------------------'
+        - '- Happy Studying!'
+        - '- System 1 is currently rebooting, it should reach login in ~30 seconds'
+        - '                                                                       '
+  - name: Rebooted Server
+    reboot: 
+      reboot_timeout: 300
