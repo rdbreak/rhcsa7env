@@ -85,13 +85,17 @@
   - name: Welcome to the RHCSA 7 Study/Test Environment!
     debug:
       msg:
-        - 'Accessing The Systems:'
+        - ' The repo server, IPA server, and Server 1 have been set up successfully!'
+        - '------------------------------------------------------------------------------'
+        - ' Server 1 is rebooting.  If you are unable to access it right away,'
+        - ' wait a couple moments, then try again.'
+        - '------------------------------------------------------------------------------'
+        - ' Accessing The Systems:'
         - '- IPA Server - 192.168.55.5'
         - '- System 1 - 192.168.55.6'
         - '- Username - vagrant'
         - '- Password - vagrant'
         - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system1`'
-        - '----------------------------------------------------------------------'
+        - '------------------------------------------------------------------------------'
+        - '- Repo, keytab, and available CA certificate information are on System 1 or 2.'
         - '- Happy Studying!'
-        - '- System 1 is currently rebooting, it should reach login in ~30 seconds'
-        - '                                                                       '
