@@ -22,7 +22,7 @@
       content: "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n:1         localhost localhost.localdomainlocalhost6localhost6.localdomain6\n192.168.55.4 repo.example.com repo\n192.168.55.5 ipa.example.com ipa\n192.168.55.6 system1.example.com system1"
       force: yes
   - name: Configuring network
-    command: nmcli con mod "System enp0s8" ipv4.addresses "192.168.55.6/24 192.168.55.1" ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
+    command: nmcli con mod 'System enp0s8' ipv4.addresses '192.168.55.6/24 192.168.55.1' ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
   - name: Restarting Network
     service: name=NetworkManager state=restarted
   - name: Enabling Authconfig. Configuring IPA Client...
@@ -95,6 +95,3 @@
         - '- Happy Studying!'
         - '- System 1 is currently rebooting, it should reach login in ~30 seconds'
         - '                                                                       '
-  - name: Rebooted Server
-    reboot: 
-      reboot_timeout: 300

@@ -32,7 +32,7 @@
         - ipa-server-dns
         - chrony
   - name: Configuring network
-    shell: nmcli con mod "System eth1" ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
+    shell: nmcli con mod 'System eth1' ipv4.addresses 192.168.55.5/24 ipv4.gateway 192.168.55.1 ipv4.dns 8.8.8.8 ipv4.dns-search example.com ipv4.method manual
   - name: Restarted Network
     service: name=NetworkManager state=restarted
   - name: Starting services
@@ -52,8 +52,15 @@
       - ldap
       - ldaps
       - ftp
-  - name: Finishing IPA server Configuration
-    command: ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+  - name: Configuring IPA Server    
+    block: 
+      - name: Finishing IPA server Configuration
+        command: ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+    rescue:
+      - debug:
+          msg: "An error occured during the IPA server installation, reverting back..."
+      - name: Uninstalling Failed IPA Configuration
+        command: ipa-server-install --uninstall
   - name: Starting services
     service: name={{item}} enabled=true state=started
     with_items:
@@ -63,7 +70,7 @@
     expect:
       command: kinit admin
       responses:
-        (.*)Password for admin@EXAMPLE.COM(.*): "password"
+        (.*)Password for admin@EXAMPLE.COM(.*): 'password'
     tags: krb
   - name: Setting IPA user home directory location
     command: ipa config-mod --homedirectory /home/ldap
@@ -72,7 +79,7 @@
     ipa_user:
         name: dave
         state: present
-        krbpasswordexpiration: "20200119235959"
+        krbpasswordexpiration: '20200119235959'
         givenname: dave
         sn: dave
         mail:
@@ -81,8 +88,8 @@
         - '+555123456'
         sshpubkey:
         password: password
-        uidnumber: "1001"
-        gidnumber: "1000"
+        uidnumber: '1001'
+        gidnumber: '1000'
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password
@@ -90,7 +97,7 @@
     ipa_user:
         name: lisa
         state: present
-        krbpasswordexpiration: "20200119235959"
+        krbpasswordexpiration: '20200119235959'
         givenname: lisa
         sn: lisa
         mail:
@@ -99,8 +106,8 @@
         - '+555123456'
         sshpubkey:
         password: password
-        uidnumber: "1002"
-        gidnumber: "1001"
+        uidnumber: '1002'
+        gidnumber: '1001'
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password   
@@ -142,6 +149,4 @@
   - name: Disabling Services then rebooting
     selinux:
       state: disabled
-  - name: Rebooted host
-    reboot:
 ...

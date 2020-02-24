@@ -13,21 +13,14 @@
       regexp: '^Subsystem'
       line: Subsystem  sftp internal-sftp
   - name: Configuring network
-    shell: nmcli con mod "System enp0s8" ipv4.addresses "192.168.55.4/24 192.168.55.1" ipv4.dns 8.8.8.8 ipv4.method manual
+    shell: nmcli con mod 'System enp0s8' ipv4.addresses '192.168.55.4/24 192.168.55.1' ipv4.dns 8.8.8.8 ipv4.method manual
   - name: Restarting Network
     service: name=NetworkManager state=restarted
   - name: Building Host File
     copy:
       dest: /etc/hosts
-      content: "127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n:1         localhost localhost.localdomain localhost6localhost6.localdomain6\n192.168.55.4 repo.example.com repo\n192.168.55.5 ipa.example.com ipa\n192.168.55.6 system1.example.com system1"
+      content: '127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4\n:1         localhost localhost.localdomain localhost6localhost6.localdomain6\n192.168.55.4 repo.example.com repo\n192.168.55.5 ipa.example.com ipa\n192.168.55.6 system1.example.com system1'
       force: yes
-#  - name: Downloading Repo Packages for System1
-#    shell: mkdir /var/www/html/rpms ;cd /var/www/html/rpms ; yum install ipa-server ipa-server-dns vim nano emacs -y --downloadonly --downloaddir=/var/www/html/rpms; for i in "Server with GUI" "Web Server";do repoquery --qf=%{name} -g --list --grouppkgs=all "$i" | xargs -I{} repotrack -a x86_64 -p /var/www/html/rpms/ {}; done && createrepo /var/www/html/rpms
-#    ignore_errors: true
-#    async: 200
-#    poll: 5
-#  - name: Configuring Repo For System
-#    command: createrepo /var/www/html/rpms
   - name: Starting Services
     service:
       name: "{{ item }}"
@@ -84,4 +77,4 @@
          # This system is running `cat /etc/redhat-release`
          #
          "
-...
+         

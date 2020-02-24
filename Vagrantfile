@@ -38,9 +38,11 @@ config.vm.define "ipa" do |ipa|
       ansible.config_file = "/vagrant/ansible.cfg"
       ansible.limit = "all"
      end
+     ipa.vm.provision :shell, :inline => "reboot", run: "always"
+
 end
 
-#System 1
+# System 1
 config.vm.define "system1" do |system1|
   system1.vm.box = "rdbreak/pracenvs"
 #  system1.vm.hostname = "system1.example.com"
@@ -53,7 +55,7 @@ config.vm.define "system1" do |system1|
   system1.vm.provider "virtualbox" do |system1|
     system1.memory = "1024"
 
-    if not File.exist?(file_to_disk1)
+    unless File.exist?(file_to_disk1)
       system1.customize ['createhd', '--filename', file_to_disk1, '--variant', 'Fixed', '--size', 10 * 1024]
     end
     system1.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 2]
@@ -74,5 +76,7 @@ config.vm.define "system1" do |system1|
       ansible.config_file = "/vagrant/ansible.cfg"
       ansible.limit = "all"
      end
+     system1.vm.provision :shell, :inline => "reboot", run: "always"
+
      end
 end
