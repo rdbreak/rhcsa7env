@@ -146,7 +146,7 @@
          # You are logged into \"`hostname`\" as the \"`whoami`\" account.
          # This system is running `cat /etc/redhat-release`
          "
-  - name: Disabling Services then Rebooting
+  - name: Adjusting Services then Rebooting
     selinux:
-      state: disabled
+      state: permissive
 ...

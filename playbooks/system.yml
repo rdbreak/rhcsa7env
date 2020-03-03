@@ -79,9 +79,9 @@
          # Usernames = dave, lisa
          # Passwords = password
          "
-  - name: Disabling Services and Rebooting Server 1
+  - name: Adjusting Services and Rebooting Server 1
     selinux:
-      state: disabled
+      state: permissive
   - name: Welcome to the RHCSA 7 Study/Test Environment!
     debug:
       msg:
