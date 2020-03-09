@@ -149,4 +149,5 @@
   - name: Adjusting Services then Rebooting
     selinux:
       state: permissive
+      policy: targeted
 ...

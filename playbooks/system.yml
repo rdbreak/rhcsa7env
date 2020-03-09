@@ -14,6 +14,10 @@
       line: Subsystem sftp internal-sftp
   - name: Fixing Resolv File
     command: echo 'nameserver 192.168.55.5' > /etc/resolv.conf
+  - name: Changing User Password
+    shell: echo vagrant | sudo passwd vagrant --stdin
+  - name: Changing Root Password
+    shell: echo password | sudo passwd root --stdin
   - name: Erasing Repos
     shell: yum clean all ; rm -rf /etc/yum.repos.d/*
   - name: Building Host File
@@ -82,6 +86,7 @@
   - name: Adjusting Services and Rebooting Server 1
     selinux:
       state: permissive
+      policy: targeted
   - name: Welcome to the RHCSA 7 Study/Test Environment!
     debug:
       msg:
@@ -93,8 +98,7 @@
         - ' Accessing The Systems:'
         - '- IPA Server - 192.168.55.5'
         - '- System 1 - 192.168.55.6'
-        - '- Username - vagrant'
-        - '- Password - vagrant'
+        - '- Username/Password - vagrant/vagrant or root/password'
         - '- Access example - `ssh vagrant@192.168.55.6` or `vagrant ssh system1`'
         - '------------------------------------------------------------------------------'
         - '- Repo, keytab, and available CA certificate information are on System 1 or 2.'
