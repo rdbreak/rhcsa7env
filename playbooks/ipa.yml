@@ -89,7 +89,7 @@
         sshpubkey:
         password: password
         uidnumber: '1001'
-        gidnumber: '1000'
+        gidnumber: '1001'
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password
@@ -107,7 +107,7 @@
         sshpubkey:
         password: password
         uidnumber: '1002'
-        gidnumber: '1001'
+        gidnumber: '1002'
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password   
