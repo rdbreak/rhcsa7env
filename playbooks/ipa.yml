@@ -6,6 +6,10 @@
   tasks:
   - name: Setting Hostname
     hostname: name=ipa.example.com
+  - name: Changing User Password
+    shell: echo vagrant | sudo passwd vagrant --stdin
+  - name: Changing Root Password
+    shell: echo password | sudo passwd root --stdin
   - name: Adjusting sftp
     lineinfile:
       path: /etc/ssh/sshd_config
@@ -52,27 +56,45 @@
       - ldap
       - ldaps
       - ftp
+      - nfs
+      - rpc-bind
+      - ldap
+      - ldaps
+      - mountd
   - name: Configuring IPA Server    
     block: 
       - name: Finishing IPA server Configuration
-        command: ipa-server-install --setup-dns --allow-zone-overlap --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
+        command: ipa-server-install --setup-dns --allow-zone-overlap --mkhomedir --auto-reverse -a 'password' --hostname=ipa.example.com -r EXAMPLE.COM -p 'password' -n example.com -U --forwarder 8.8.8.8
     rescue:
       - debug:
           msg: "An error occured during the IPA server installation, reverting back..."
       - name: Uninstalling Failed IPA Configuration
         command: ipa-server-install --uninstall
+  - name: Creating NFS shares
+    copy:
+      content: "/home/ldap/dave   192.168.55.6(rw)\n/home/ldap/lisa   192.168.55.6(rw)"
+      dest: /etc/exports
+      force: yes
   - name: Starting services
     service: name={{item}} enabled=true state=started
     with_items:
       - httpd
       - chronyd
+      - nfs-server
+  - name: Creating LDAP User Directory
+    file:
+      path: /home/ldap
+      state: directory
+      mode: '0755'
+  - name: Restarting NFS Server
+    service: name=nfs-server state=restarted
   - name: Authenticating KRB5 Database
     expect:
       command: kinit admin
       responses:
         (.*)Password for admin@EXAMPLE.COM(.*): 'password'
     tags: krb
-  - name: Setting IPA user home directory location
+  - name: Setting LDAP User Home Directory Location
     command: ipa config-mod --homedirectory /home/ldap
     tags: krb
   - name: Adding IPA user 'dave'
@@ -93,6 +115,21 @@
         ipa_host: ipa.example.com
         ipa_user: admin
         ipa_pass: password
+  - name: Signing Into Dave
+    command: su - dave
+  - name: Creating Dave Test File
+    copy:
+      content: "This is Dave's test file"
+      dest: /home/ldap/dave/davetest.txt
+      owner: dave
+      group: dave
+  - name: Fixing Dave's Home Directory Permissions
+    file:
+      path: /home/ldap/dave
+      state: directory
+      recurse: yes
+      owner: dave
+      group: dave
   - name: Adding IPA user 'lisa'
     ipa_user:
         name: lisa
@@ -110,7 +147,23 @@
         gidnumber: '1001'
         ipa_host: ipa.example.com
         ipa_user: admin
-        ipa_pass: password   
+        ipa_pass: password
+  - name: Signing Into Lisa
+    command: su - lisa
+  - name: Creating Lisa Test File
+    copy:
+      content: "This is Lisa's test file"
+      dest: /home/ldap/lisa/lisatest.txt
+      owner: lisa
+      group: lisa
+    remote_user: lisa
+  - name: Fixing Lisa's Home Directory Permissions
+    file:
+      path: /home/ldap/lisa
+      state: directory
+      recurse: yes
+      owner: lisa
+      group: lisa
   - name: Copying CA CERT
     copy:
       src: /etc/ipa/ca.crt

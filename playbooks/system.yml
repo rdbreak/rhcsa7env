@@ -29,10 +29,10 @@
     command: nmcli con mod 'System enp0s8' ipv4.addresses '192.168.55.6/24 192.168.55.1' ipv4.dns 192.168.55.5 ipv4.dns-search example.com ipv4.method manual
   - name: Restarting Network
     service: name=NetworkManager state=restarted
-  - name: Enabling Authconfig. Configuring IPA Client...
-    command: authconfig --update --enablesssd --enablesssdauth --enablemkhomedir
+#  - name: Enabling Authconfig. Configuring IPA Client...
+#    command: authconfig --update --enablesssd --enablesssdauth
   - name: IPA client Configured
-    command: ipa-client-install --enable-dns-updates --force-join --mkhomedir -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
+    command: ipa-client-install --enable-dns-updates --force-join -N --principal admin --server ipa.example.com -w password --hostname=system1.example.com --realm=EXAMPLE.COM --domain=example.com -U
     ignore_errors: yes
     async: 700
     poll: 0
