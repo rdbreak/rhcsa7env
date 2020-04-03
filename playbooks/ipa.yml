@@ -72,7 +72,7 @@
         command: ipa-server-install --uninstall
   - name: Creating NFS shares
     copy:
-      content: "/home/ldap/dave   192.168.55.6(rw)\n/home/ldap/lisa   192.168.55.6(rw)"
+      content: "/home   192.168.55.6(rw)"
       dest: /etc/exports
       force: yes
   - name: Starting services
