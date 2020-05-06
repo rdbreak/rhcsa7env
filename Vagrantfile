@@ -23,7 +23,7 @@ config.vm.define "ipa" do |ipa|
   ipa.vm.box = "centos/7"
   ipa.vm.provision :shell, :inline => "sudo sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config; sudo systemctl restart sshd;", run: "always"
   ipa.vm.provision :shell, :inline => "yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y; sudo yum install -y nss sshpass libselinux-python python-pip python-devel httpd sshpass vsftpd createrepo pki-ca", run: "always"
-  ipa.vm.provision :shell, :inline => "python -m pip install -U pip ; python -m pip install pexpect; python -m pip install ansible", run: "always"
+  ipa.vm.provision :shell, :inline => "python -m pip install -U pip ; python -m pip install wheel pexpect; python -m pip install ansible", run: "always"
   ipa.vm.provision :shell, :inline => "echo \'vagrant\' | sudo passwd vagrant --stdin", run: "always"
 #  ipa.vm.hostname = "ipa.example.com"
   ipa.vm.network "private_network", ip: "192.168.55.5"
@@ -38,7 +38,7 @@ config.vm.define "ipa" do |ipa|
       ansible.config_file = "/vagrant/ansible.cfg"
       ansible.limit = "all"
      end
-     ipa.vm.provision :shell, :inline => "reboot", run: "always"
+#     ipa.vm.provision :shell, :inline => "reboot", run: "always"
 
 end
 
