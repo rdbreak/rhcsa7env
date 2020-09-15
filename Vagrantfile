@@ -1,6 +1,7 @@
 VAGRANTFILE_API_VERSION = "2"
 VAGRANT_DISABLE_VBOXSYMLINKCREATE = "1"
 file_to_disk1 = './disk-0-1.vdi'
+file_to_disk2 = './disk-0-2.vdi'
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 # Use same SSH key for each machine
 config.ssh.insert_key = false
@@ -53,21 +54,23 @@ config.vm.define "system1" do |system1|
   system1.vm.synced_folder ".", "/vagrant", type: "rsync", rsync__exclude: ".git/"
 
   system1.vm.provider "virtualbox" do |system1|
-    system1.memory = "1024"
+    system1.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 2]
 
     unless File.exist?(file_to_disk1)
-      system1.customize ['createhd', '--filename', file_to_disk1, '--variant', 'Fixed', '--size', 10 * 1024]
-      system1.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 2]
-      system1.customize ['storageattach', :id,  '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk1]
+        system1.customize ['createhd', '--filename', file_to_disk1, '--variant', 'Fixed', '--size', 10 * 1024]
       end
-  end
+
+      system1.memory = "1024"
+      system1.customize ['storageattach', :id,  '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk1]
+    end
 
     system1.vm.provision "shell", inline: <<-SHELL
-    yes|  mkfs.ext4 -L extradisk /dev/sdb
+    yes|  mkfs.ext4 -L extradisk1 /dev/sdb
     SHELL
     system1.vm.provision "shell", inline: <<-SHELL
-    mkdir /extradisk ; echo \'LABEL=extradisk /extradisk ext4 defaults 0 0\' >> /etc/fstab
+    mkdir /extradisk1 ; echo \'LABEL=extradisk1 /extradisk1 ext4 defaults 0 0\' >> /etc/fstab
     SHELL
+
     system1.vm.provision :ansible_local do |ansible|
       ansible.playbook = "/vagrant/playbooks/system.yml"
       ansible.install = false
